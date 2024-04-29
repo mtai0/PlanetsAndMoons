@@ -13,7 +13,7 @@ public class PlanetDao {
     public List<Planet> getAllPlanets() {
 		ArrayList<Planet> planetList = new ArrayList<Planet>();
 		try(Connection connection = ConnectionUtil.createConnection()) {
-			String sql = "select * from planets where ownerId = ?";
+			String sql = "select * from planets";
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.executeQuery();
 			ResultSet rs = ps.executeQuery();
@@ -93,8 +93,17 @@ public class PlanetDao {
 		return newPlanet;
 	}
 
-	public boolean deletePlanetById(int planetId) {
-		// TODO: implement
+	public boolean deletePlanetById(int ownerId, int planetId) {
+		try(Connection connection = ConnectionUtil.createConnection()) {
+			String sql = "delete from planets where ownerId = ? and planetId = ?";
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setInt(1, ownerId);
+			ps.setInt(2, planetId);
+			int rowsAffected = ps.executeUpdate();
+			if (rowsAffected > 0) return true;
+		}catch (SQLException e){
+			System.out.println(e);
+		}
 		return false;
 	}
 }
