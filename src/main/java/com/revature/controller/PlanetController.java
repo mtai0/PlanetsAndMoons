@@ -32,7 +32,7 @@ public class PlanetController {
 		int planetId = ctx.pathParamAsClass("id", Integer.class).get();
 		
 		Planet p = planetService.getPlanetById(u.getId(), planetId);
-		
+
 		ctx.json(p).status(200);
 	}
 
@@ -48,7 +48,13 @@ public class PlanetController {
 		User u = ctx.sessionAttribute("user");
 		int planetId = ctx.pathParamAsClass("id", Integer.class).get();
 		
-		planetService.deletePlanetById(u.getId(), planetId);
-		ctx.json("Planet successfully deleted").status(202);
+		if (planetService.deletePlanetById(u.getId(), planetId))
+		{
+			ctx.json("Planet successfully deleted").status(202);
+		}
+		else
+		{
+			ctx.json("Planet could not be deleted").status(400);
+		}
 	}
 }

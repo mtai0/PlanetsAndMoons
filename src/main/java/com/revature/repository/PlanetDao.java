@@ -95,7 +95,7 @@ public class PlanetDao {
 
 	public boolean deletePlanetById(int ownerId, int planetId) {
 		try(Connection connection = ConnectionUtil.createConnection()) {
-			String sql = "delete from planets where ownerId = ? and planetId = ?";
+			String sql = "delete from planets where ownerId = ? and id = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setInt(1, ownerId);
 			ps.setInt(2, planetId);
