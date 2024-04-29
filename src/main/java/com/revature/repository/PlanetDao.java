@@ -13,8 +13,8 @@ public class PlanetDao {
     public List<Planet> getAllPlanets() {
 		ArrayList<Planet> planetList = new ArrayList<Planet>();
 		try(Connection connection = ConnectionUtil.createConnection()) {
-			String sql = "select * from planets";
-			PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			String sql = "select * from planets where ownerId = ?";
+			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.executeQuery();
 			ResultSet rs = ps.executeQuery();
 			while (rs.next())
@@ -35,7 +35,7 @@ public class PlanetDao {
 	public Planet getPlanetByName(int ownerId, String planetName) {
 		try(Connection connection = ConnectionUtil.createConnection()) {
 			String sql = "select * from planets where name = ? and ownerId = ?";
-			PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setString(1, planetName);
 			ps.setInt(2, ownerId);
 			ps.executeQuery();
@@ -47,18 +47,30 @@ public class PlanetDao {
 				newPlanet.setOwnerId(rs.getInt("ownerId"));
 				return newPlanet;
 			}
-			else
-			{
-				System.out.println("No planet with name " + planetName + " found");
-			}
 		}catch (SQLException e){
 			System.out.println(e);
 		}
 		return null;
 	}
 
-	public Planet getPlanetById(int planetId) {
-		// TODO: implement
+	public Planet getPlanetById(int ownerId, int planetId) {
+		try(Connection connection = ConnectionUtil.createConnection()) {
+			String sql = "select * from planets where id = ? and ownerId = ?";
+			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setInt(1, planetId);
+			ps.setInt(2, ownerId);
+			ps.executeQuery();
+			ResultSet rs = ps.executeQuery();
+			if(rs.next()){
+				Planet newPlanet = new Planet();
+				newPlanet.setId(rs.getInt(1));
+				newPlanet.setName(rs.getString("name"));
+				newPlanet.setOwnerId(rs.getInt("ownerId"));
+				return newPlanet;
+			}
+		}catch (SQLException e){
+			System.out.println(e);
+		}
 		return null;
 	}
 

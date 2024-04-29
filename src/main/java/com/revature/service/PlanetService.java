@@ -23,8 +23,7 @@ public class PlanetService {
 	}
 
 	public Planet getPlanetById(int ownerId, int planetId) {
-		// TODO Auto-generated method stub
-		return null;
+		return dao.getPlanetById(ownerId, planetId);
 	}
 
 	public Planet createPlanet(int ownerId, Planet planet) {
