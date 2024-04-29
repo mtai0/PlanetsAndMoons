@@ -14,8 +14,7 @@ public class PlanetService {
 	}
 
 	public List<Planet> getAllPlanets() {
-		// TODO Auto-generated method stub
-		return null;
+		return dao.getAllPlanets();
 	}
 
 	public Planet getPlanetByName(int ownerId, String planetName) {
@@ -29,8 +28,23 @@ public class PlanetService {
 	}
 
 	public Planet createPlanet(int ownerId, Planet planet) {
-		// TODO Auto-generated method stub
-		return null;
+		String planetName = planet.getName();
+		int nameLength = planetName.length();
+		if (nameLength <= 30 && nameLength > 0)
+		{
+			Planet existingPlanet = dao.getPlanetByName(planetName);
+			if (existingPlanet == null)
+			{
+				System.out.println("Planet not found, creating new.");
+				return dao.createPlanet(planet);
+			}
+			else
+			{
+				System.out.println("Planet found, skipping.");
+			}
+			//return existingPlanet;	//Should this return empty or existing?
+		}
+		return new Planet();
 	}
 
 	public boolean deletePlanetById(int ownerId, int planetId) {

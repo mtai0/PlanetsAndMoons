@@ -40,9 +40,15 @@ public class PlanetController {
 		Planet planetToBeCreated = ctx.bodyAsClass(Planet.class);
 		User u = ctx.sessionAttribute("user");
 		
-		Planet createdPlanet = planetService.createPlanet(u.getId(),planetToBeCreated);
-		
-		ctx.json(createdPlanet).status(201);
+		Planet createdPlanet = planetService.createPlanet(u.getId(), planetToBeCreated);
+		if (createdPlanet != null)
+		{
+			ctx.json(createdPlanet).status(201);
+		}
+		else
+		{
+			ctx.status(400);
+		}
 	}
 
 	public void deletePlanet(Context ctx) {
