@@ -15,7 +15,8 @@ public class PlanetController {
 	}
 
 	public void getAllPlanets(Context ctx) {
-		ctx.json(planetService.getAllPlanets()).status(200);
+		User u = ctx.sessionAttribute("user");
+		ctx.json(planetService.getAllPlanets(u.getId())).status(200);
 	}
 
 	public void getPlanetByName(Context ctx) {

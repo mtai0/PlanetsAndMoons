@@ -10,11 +10,12 @@ import com.revature.utilities.ConnectionUtil;
 
 public class PlanetDao {
     
-    public List<Planet> getAllPlanets() {
+    public List<Planet> getAllPlanets(int ownerId) {
 		ArrayList<Planet> planetList = new ArrayList<Planet>();
 		try(Connection connection = ConnectionUtil.createConnection()) {
-			String sql = "select * from planets";
+			String sql = "select * from planets where ownerId = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
+			ps.setInt(1, ownerId);
 			ps.executeQuery();
 			ResultSet rs = ps.executeQuery();
 			while (rs.next())
