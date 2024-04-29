@@ -2,6 +2,7 @@ package com.revature.service;
 
 import java.util.List;
 
+import com.revature.controller.PlanetController;
 import com.revature.models.Planet;
 import com.revature.repository.PlanetDao;
 
@@ -18,8 +19,7 @@ public class PlanetService {
 	}
 
 	public Planet getPlanetByName(int ownerId, String planetName) {
-		// TODO Auto-generated method stub
-		return null;
+		return dao.getPlanetByName(ownerId, planetName);
 	}
 
 	public Planet getPlanetById(int ownerId, int planetId) {
@@ -32,17 +32,12 @@ public class PlanetService {
 		int nameLength = planetName.length();
 		if (nameLength <= 30 && nameLength > 0)
 		{
-			Planet existingPlanet = dao.getPlanetByName(planetName);
+			Planet existingPlanet = dao.getPlanetByName(ownerId, planetName);
 			if (existingPlanet == null)
 			{
-				System.out.println("Planet not found, creating new.");
 				return dao.createPlanet(planet);
 			}
-			else
-			{
-				System.out.println("Planet found, skipping.");
-			}
-			//return existingPlanet;	//Should this return empty or existing?
+			return existingPlanet;	//Should this return empty or existing?
 		}
 		return new Planet();
 	}

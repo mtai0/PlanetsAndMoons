@@ -32,11 +32,12 @@ public class PlanetDao {
 		return planetList;
 	}
 
-	public Planet getPlanetByName(String planetName) {
+	public Planet getPlanetByName(int ownerId, String planetName) {
 		try(Connection connection = ConnectionUtil.createConnection()) {
-			String sql = "select * from planets where name = ?";
+			String sql = "select * from planets where name = ? and ownerId = ?";
 			PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, planetName);
+			ps.setInt(2, ownerId);
 			ps.executeQuery();
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()){
