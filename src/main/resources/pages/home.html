@@ -68,7 +68,7 @@
     </span>
     <span id="searchPlanetContainer">
         <input type="text" id="searchPlanetInput" placeholder="name or id for planet to be found">
-        <button id="searchPlanetButton" onclick="TBD">Search Planet</button>
+        <button id="searchPlanetButton" onclick="searchPlanet()">Search Planet</button>
     </span>
     <span id="searchMoonContainer">
         <input type="text" id="searchMoonInput" placeholder="name or id for moon to be found">
@@ -259,6 +259,25 @@
                 alert('Failed to logout');
             }
         }
+		
+		async function searchPlanet()
+		{
+			const planetName = document.getElementById('searchPlanetInput').value;
+			if (planetName === "")
+			{
+				populateCelestialTable();
+				return 0;
+			}
+			
+			let url = `http://localhost:7000/api/planet/name/${planetName}`;
+		
+			fetch(url, {
+                        method: 'GET',
+                        body: bodyJson,
+                        headers: headersList,
+                        credentials: 'include'
+                    });
+		}
 
     </script>
 </body>
