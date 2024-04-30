@@ -260,23 +260,24 @@
             }
         }
 		
-		async function searchPlanet()
-		{
+		async function searchPlanet() {
 			const planetName = document.getElementById('searchPlanetInput').value;
-			if (planetName === "")
-			{
+			if (planetName === "") {
 				populateCelestialTable();
 				return 0;
 			}
 			
 			let url = `http://localhost:7000/api/planet/name/${planetName}`;
 		
-			fetch(url, {
+			const response = await fetch(url, {
                         method: 'GET',
                         body: bodyJson,
                         headers: headersList,
                         credentials: 'include'
                     });
+            if (response.ok) {
+                document.write(response);
+            }
 		}
 
     </script>
