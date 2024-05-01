@@ -72,7 +72,7 @@
     </span>
     <span id="searchMoonContainer">
         <input type="text" id="searchMoonInput" placeholder="name or id for moon to be found">
-        <button id="searchMoonButton" onclick="TBD">Search Moon</button>
+        <button id="searchMoonButton" onclick="searchMoon()">Search Moon</button>
     </spa>
 
     <table id="celestialTable">
@@ -322,6 +322,67 @@
             }
 		}
 
+		async function searchMoon() {
+			const moonName = document.getElementById('searchMoonInput').value;
+
+            //Empty input reverts to showing everything.
+			if (moonName === "") {
+				populateCelestialTable();
+				return 0;
+			}
+
+            //Clear table
+            const table = document.getElementById('celestialTable');
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+			
+			let url = `http://localhost:7000/api/moon/id/${moonName}`;
+			let response = await fetch(url, {
+                        method: 'GET',
+                        credentials: 'include'
+                    });
+            if (response.status === 200) {
+                const data = await response.json();
+
+                const row = table.insertRow();
+                const typeCell = row.insertCell(0);
+                const idCell = row.insertCell(1);
+                const nameCell = row.insertCell(2);
+                const ownerCell = row.insertCell(3);
+
+                typeCell.textContent = 'moon';
+                idCell.textContent = data.id;
+                nameCell.textContent = data.name;
+                ownerCell.textContent = data.ownerId;
+            }
+			else {
+				url = `http://localhost:7000/api/moon/name/${moonName}`;
+				let response = await fetch(url, {
+                        method: 'GET',
+                        credentials: 'include'
+                    });
+				if (response.status === 200) {
+					const data = await response.json();
+
+					const row = table.insertRow();
+					const typeCell = row.insertCell(0);
+					const idCell = row.insertCell(1);
+					const nameCell = row.insertCell(2);
+					const ownerCell = row.insertCell(3);
+
+					typeCell.textContent = 'moon';
+					idCell.textContent = data.id;
+					nameCell.textContent = data.name;
+					ownerCell.textContent = data.ownerId;
+				}
+				else {
+					const row = table.insertRow();
+					const typeCell = row.insertCell(0);
+					typeCell.textContent = 'No results found.';
+				}
+			}
+		}
     </script>
 </body>
 </html>
