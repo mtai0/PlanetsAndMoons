@@ -88,7 +88,7 @@ public class MoonDao {
 				ps.setInt(1, m.getMyPlanetId());
 				ps.setInt(2, ownerId);
 				ResultSet rs = ps.executeQuery();
-				if(rs.next()) {
+				if(!rs.next()) {
 					return newMoon;
 				}
 			}
