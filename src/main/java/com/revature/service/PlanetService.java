@@ -19,7 +19,6 @@ public class PlanetService {
 	}
 
 	public Planet getPlanetByName(int ownerId, String planetName) {
-		System.out.println("GetPlanetByName called");
 		return dao.getPlanetByName(ownerId, planetName);
 	}
 

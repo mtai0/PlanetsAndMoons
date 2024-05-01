@@ -27,7 +27,7 @@ public class MoonService {
 
 	public Moon createMoon(int ownerId, Moon m) {
 		String moonName = m.getName();
-		if (moonName.length() <= 30 && moonName.length() > 0)
+		if (moonName.length() <= 30 && !moonName.isEmpty())
 		{
 			Moon existingMoon = dao.getMoonByName(ownerId, moonName);
 			if (existingMoon == null)
