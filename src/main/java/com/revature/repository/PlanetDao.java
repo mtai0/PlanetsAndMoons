@@ -97,7 +97,14 @@ public class PlanetDao {
 			ps.setInt(1, ownerId);
 			ps.setInt(2, planetId);
 			int rowsAffected = ps.executeUpdate();
-			if (rowsAffected > 0) return true;
+			if (rowsAffected > 0) {
+				//Need to manually delete moons since ON DELETE CASCADE isn't working.
+				String moonSql = "delete from moons where myPlanetId = ?";
+				PreparedStatement deleteMoons = connection.prepareStatement(moonSql);
+				deleteMoons.setInt(1, planetId);
+				deleteMoons.executeUpdate();
+				return true;
+			}
 		}catch (SQLException e){
 			System.out.println(e);
 		}
