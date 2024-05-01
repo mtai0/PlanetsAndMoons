@@ -275,8 +275,8 @@
                 table.deleteRow(1);
             }
 			
-			let url = `http://localhost:7000/api/planet/name/${planetName}`;
-			const response = await fetch(url, {
+			let url = `http://localhost:7000/api/planet/id/${planetName}`;
+			let response = await fetch(url, {
                         method: 'GET',
                         credentials: 'include'
                     });
@@ -295,7 +295,30 @@
                 ownerCell.textContent = data.ownerId;
             }
             else {
-                alert("No results found.")
+				url = `http://localhost:7000/api/planet/name/${planetName}`;
+				let response = await fetch(url, {
+                        method: 'GET',
+                        credentials: 'include'
+                    });
+				if (response.status === 200) {
+					const data = await response.json();
+
+					const row = table.insertRow();
+					const typeCell = row.insertCell(0);
+					const idCell = row.insertCell(1);
+					const nameCell = row.insertCell(2);
+					const ownerCell = row.insertCell(3);
+
+					typeCell.textContent = 'planet';
+					idCell.textContent = data.id;
+					nameCell.textContent = data.name;
+					ownerCell.textContent = data.ownerId;
+				}
+				else {
+					const row = table.insertRow();
+					const typeCell = row.insertCell(0);
+					typeCell.textContent = 'No results found.';
+				}
             }
 		}
 
