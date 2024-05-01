@@ -26,7 +26,16 @@ public class MoonService {
 	}
 
 	public Moon createMoon(int ownerId, Moon m) {
-		return dao.createMoon(ownerId, m);
+		String moonName = m.getName();
+		if (moonName.length() <= 30 && moonName.length() > 0)
+		{
+			Moon existingMoon = dao.getMoonByName(ownerId, moonName);
+			if (existingMoon == null)
+			{
+				return dao.createMoon(ownerId, m);
+			}
+		}
+		return new Moon();
 	}
 
 	public boolean deleteMoonById(int ownerId, int moonId) {

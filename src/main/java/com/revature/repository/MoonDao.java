@@ -111,7 +111,7 @@ public class MoonDao {
 
 	public boolean deleteMoonById(int ownerId, int moonId) {
 		try(Connection connection = ConnectionUtil.createConnection()) {
-			String sql = "DELETE FROM (SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ?) WHERE id = ?";
+			String sql = "DELETE FROM (SELECT moons.id, moons.name, moons.myPlanetId FROM planets WHERE planets.ownerId = ? INNER JOIN moons ON planets.id = moons.myPlanetId) WHERE id = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setInt(1, ownerId);
 			ps.setInt(2, moonId);

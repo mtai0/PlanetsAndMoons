@@ -42,8 +42,8 @@ public class MoonController {
 	public void createMoon(Context ctx) {
 		Moon m = ctx.bodyAsClass(Moon.class);
 		User u = ctx.sessionAttribute("user");
+
 		Moon outGoingMoon = moonService.createMoon(u.getId(), m);
-		
 		ctx.json(outGoingMoon).status(201);
 	}
 
