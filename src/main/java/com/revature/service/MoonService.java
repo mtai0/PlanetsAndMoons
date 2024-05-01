@@ -13,32 +13,27 @@ public class MoonService {
 		this.dao = dao;
 	}
 
-	public List<Moon> getAllMoons() {
-		// TODO implement
-		return null;
+	public List<Moon> getAllMoons(int ownerId) {
+		return dao.getAllMoons(ownerId);
 	}
 
-	public Moon getMoonByName(int myPlanetId, String moonName) {
-		// TODO implement
-		return null;
+	public Moon getMoonByName(int ownerId, String moonName) {
+		return dao.getMoonByName(ownerId, moonName);
 	}
 
-	public Moon getMoonById(int myPlanetId, int moonId) {
-		// TODO Aimplement
-		return null;
+	public Moon getMoonById(int ownerId, int moonId) {
+		return dao.getMoonById(ownerId, moonId);
 	}
 
-	public Moon createMoon(Moon m) {
-		// TODO implement
-		return null;
+	public Moon createMoon(int ownerId, Moon m) {
+		return dao.createMoon(ownerId, m);
 	}
 
-	public boolean deleteMoonById(int moonId) {
-		return false;
+	public boolean deleteMoonById(int ownerId, int moonId) {
+		return dao.deleteMoonById(ownerId, moonId);
 	}
 
-	public List<Moon> getMoonsFromPlanet(int myPlanetId) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Moon> getMoonsFromPlanet(int ownerId, int myPlanetId) {
+		return dao.getMoonsFromPlanet(ownerId, myPlanetId);
 	}
 }

@@ -186,40 +186,40 @@
         });
 
         async function populateCelestialTable() {
-        document.getElementById('celestialTable').innerHTML = '<tr><th>Type</th><th>ID</th><th>Name</th><th>Owner</th></tr>';
-        const response = await fetch('http://localhost:7000/api/planet', {credentials: 'include'});
-        if (response.ok) {
-            const data = await response.json();
-            console.log(data);
-            const table = document.getElementById('celestialTable');
-            data.forEach(planet => {
-                const row = table.insertRow();
-                const typeCell = row.insertCell(0);
-                const idCell = row.insertCell(1);
-                const nameCell = row.insertCell(2);
-                const ownerCell = row.insertCell(3);
-                typeCell.textContent = 'planet';
-                idCell.textContent = planet.id;
-                nameCell.textContent = planet.name;
-                ownerCell.textContent = planet.ownerId;
-            });
-        }
-        const moonResponse = await fetch('http://localhost:7000/api/moon', {credentials: 'include'});
-            if (moonResponse.ok) {
-                const moonData = await moonResponse.json();
+            document.getElementById('celestialTable').innerHTML = '<tr><th>Type</th><th>ID</th><th>Name</th><th>Owner</th></tr>';
+            const response = await fetch('http://localhost:7000/api/planet', {credentials: 'include'});
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data);
                 const table = document.getElementById('celestialTable');
-                moonData.forEach(moon => {
+                data.forEach(planet => {
                     const row = table.insertRow();
                     const typeCell = row.insertCell(0);
                     const idCell = row.insertCell(1);
                     const nameCell = row.insertCell(2);
                     const ownerCell = row.insertCell(3);
-                    typeCell.textContent = 'moon';
-                    idCell.textContent = moon.id;
-                    nameCell.textContent = moon.name;
-                    ownerCell.textContent = moon.myPlanetId;
+                    typeCell.textContent = 'planet';
+                    idCell.textContent = planet.id;
+                    nameCell.textContent = planet.name;
+                    ownerCell.textContent = planet.ownerId;
                 });
             }
+            const moonResponse = await fetch('http://localhost:7000/api/moon', {credentials: 'include'});
+                if (moonResponse.ok) {
+                    const moonData = await moonResponse.json();
+                    const table = document.getElementById('celestialTable');
+                    moonData.forEach(moon => {
+                        const row = table.insertRow();
+                        const typeCell = row.insertCell(0);
+                        const idCell = row.insertCell(1);
+                        const nameCell = row.insertCell(2);
+                        const ownerCell = row.insertCell(3);
+                        typeCell.textContent = 'moon';
+                        idCell.textContent = moon.id;
+                        nameCell.textContent = moon.name;
+                        ownerCell.textContent = moon.myPlanetId;
+                    });
+                }
         }
         
         async function deleteCelestial() {
@@ -262,21 +262,40 @@
 		
 		async function searchPlanet() {
 			const planetName = document.getElementById('searchPlanetInput').value;
+
+            //Empty input reverts to showing everything.
 			if (planetName === "") {
 				populateCelestialTable();
 				return 0;
 			}
+
+            //Clear table
+            const table = document.getElementById('celestialTable');
+            while (table.rows.length > 1) {
+                table.deleteRow(1);
+            }
 			
 			let url = `http://localhost:7000/api/planet/name/${planetName}`;
-		
 			const response = await fetch(url, {
                         method: 'GET',
-                        body: bodyJson,
-                        headers: headersList,
                         credentials: 'include'
                     });
-            if (response.ok) {
-                document.write(response);
+            if (response.status === 200) {
+                const data = await response.json();
+
+                const row = table.insertRow();
+                const typeCell = row.insertCell(0);
+                const idCell = row.insertCell(1);
+                const nameCell = row.insertCell(2);
+                const ownerCell = row.insertCell(3);
+
+                typeCell.textContent = 'planet';
+                idCell.textContent = data.id;
+                nameCell.textContent = data.name;
+                ownerCell.textContent = data.ownerId;
+            }
+            else {
+                alert("No results found.")
             }
 		}
 

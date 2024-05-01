@@ -16,7 +16,6 @@ public class PlanetDao {
 			String sql = "select * from planets where ownerId = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setInt(1, ownerId);
-			ps.executeQuery();
 			ResultSet rs = ps.executeQuery();
 			while (rs.next())
 			{
@@ -28,7 +27,6 @@ public class PlanetDao {
 			}
 		}catch (SQLException e){
 			System.out.println(e);
-			return planetList;
 		}
 		return planetList;
 	}
@@ -39,7 +37,6 @@ public class PlanetDao {
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setString(1, planetName);
 			ps.setInt(2, ownerId);
-			ps.executeQuery();
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()){
 				Planet newPlanet = new Planet();
@@ -60,7 +57,6 @@ public class PlanetDao {
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setInt(1, planetId);
 			ps.setInt(2, ownerId);
-			ps.executeQuery();
 			ResultSet rs = ps.executeQuery();
 			if(rs.next()){
 				Planet newPlanet = new Planet();
@@ -86,7 +82,7 @@ public class PlanetDao {
 			ResultSet rs = ps.getGeneratedKeys();
 
 			newPlanet.setId(rs.getInt(1));
-			newPlanet.setName((p.getName()));
+			newPlanet.setName(p.getName());
 			newPlanet.setOwnerId(p.getOwnerId());
 		}catch (SQLException e){
 			System.out.println(e);

@@ -262,11 +262,14 @@
 		
 		async function searchPlanet() {
 			const planetName = document.getElementById('searchPlanetInput').value;
+
+            //Empty input reverts to showing everything.
 			if (planetName === "") {
 				populateCelestialTable();
 				return 0;
 			}
 
+            //Clear table
             const table = document.getElementById('celestialTable');
             while (table.rows.length > 1) {
                 table.deleteRow(1);

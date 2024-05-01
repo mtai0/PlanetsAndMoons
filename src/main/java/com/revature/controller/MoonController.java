@@ -17,7 +17,8 @@ public class MoonController {
 	}
 
 	public void getAllMoons(Context ctx) {
-		ctx.json(moonService.getAllMoons()).status(200);
+		User u = ctx.sessionAttribute("user");
+		ctx.json(moonService.getAllMoons(u.getId())).status(200);
 	}
 
 	public void getMoonByName(Context ctx) {
@@ -40,24 +41,24 @@ public class MoonController {
 
 	public void createMoon(Context ctx) {
 		Moon m = ctx.bodyAsClass(Moon.class);
-		
-		Moon outGoingMoon = moonService.createMoon(m);
+		User u = ctx.sessionAttribute("user");
+		Moon outGoingMoon = moonService.createMoon(u.getId(), m);
 		
 		ctx.json(outGoingMoon).status(201);
 	}
 
 	public void deleteMoon(Context ctx) {
 		int moonId = ctx.pathParamAsClass("id", Integer.class).get();
-		
-		moonService.deleteMoonById(moonId);
+		User u = ctx.sessionAttribute("user");
+		moonService.deleteMoonById(u.getId(), moonId);
 		
 		ctx.json("Moon successfully deleted").status(202);
 	}
 	
 	public void getPlanetMoons(Context ctx) {
 		int planetId = ctx.pathParamAsClass("id", Integer.class).get();
-		
-		List<Moon> moonList = moonService.getMoonsFromPlanet(planetId);
+		User u = ctx.sessionAttribute("user");
+		List<Moon> moonList = moonService.getMoonsFromPlanet(u.getId(), planetId);
 		
 		ctx.json(moonList).status(200);
 	}
