@@ -12,11 +12,14 @@ create table users(
 create table planets(
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	name varchar(20),
-	ownerId int references users(id)
+	ownerId int,
+	constraint fk_ownerId foreign key (ownerId) references users(id) on delete cascade
+
 );
 
 create table moons(
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	name varchar(20),
-	myPlanetId int references planets(id)
+	myPlanetId int,
+	constraint fk_myPlanetId foreign key (myPlanetId) references planets(id) on delete cascade
 );
