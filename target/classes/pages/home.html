@@ -85,9 +85,9 @@
         <!-- Add rows for each celestial object here -->
     </table>
 
-    <select id="locationSelect">
+    <select id="locationSelect" >
         <option value="moon">Moon</option>
-        <option value="planet">Planet</option>
+        <option value="planet" selected>Planet</option>
     </select>
 
     <div id="inputContainer"></div>
@@ -184,6 +184,7 @@
                 inputContainer.appendChild(submitButton);
             }
         });
+		document.getElementById('locationSelect').dispatchEvent(new Event('change'));
 
         async function populateCelestialTable() {
             document.getElementById('celestialTable').innerHTML = '<tr><th>Type</th><th>ID</th><th>Name</th><th>Owner</th></tr>';

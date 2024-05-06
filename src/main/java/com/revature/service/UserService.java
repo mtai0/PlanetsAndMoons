@@ -19,7 +19,10 @@ public class UserService {
 
 	public User register(User registerRequestData) {
 		// check that username and password are within acceptable length
-		if (registerRequestData.getUsername().length() <= 30 && registerRequestData.getPassword().length() <= 30){
+		String userName = registerRequestData.getUsername();
+		String password = registerRequestData.getPassword();
+
+		if (!userName.isEmpty() && userName.length() <= 30 && !password.isEmpty() && password.length() <= 30){
 			// if the lengths are acceptable check that the username is unique
 			if(dao.getUserByUsername(registerRequestData.getUsername()) == null){
 				// if the username is unique go ahead and actually create the new user
