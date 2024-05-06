@@ -81,6 +81,8 @@ public class MoonDao {
 	public Moon createMoon(int ownerId, Moon m) {
 		Moon newMoon = new Moon();
 		try(Connection connection = ConnectionUtil.createConnection()) {
+			String moonName = m.getName();
+
 			//Make sure the user owns the planet first.
 			{
 				String sql = "select * from planets where id = ? and ownerId = ?";
@@ -89,6 +91,31 @@ public class MoonDao {
 				ps.setInt(2, ownerId);
 				ResultSet rs = ps.executeQuery();
 				if(!rs.next()) {
+					return newMoon;
+				}
+			}
+
+			//Check if Moon exists with same name
+			{
+				String sql = "SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? and moons.name = ?";
+				PreparedStatement ps = connection.prepareStatement(sql);
+				ps.setInt(1, ownerId);
+				ps.setString(2, moonName);
+				ps.executeQuery();
+				ResultSet rs = ps.executeQuery();
+				if (rs.next()) {
+					return newMoon;
+				}
+			}
+
+			//Check if Planet exists with same name
+			{
+				String sql = "select * from planets where name = ? and ownerId = ?";
+				PreparedStatement ps = connection.prepareStatement(sql);
+				ps.setString(1, moonName);
+				ps.setInt(2, ownerId);
+				ResultSet rs = ps.executeQuery();
+				if(rs.next()){
 					return newMoon;
 				}
 			}

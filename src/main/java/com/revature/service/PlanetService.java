@@ -28,15 +28,8 @@ public class PlanetService {
 
 	public Planet createPlanet(int ownerId, Planet planet) {
 		String planetName = planet.getName();
-		int nameLength = planetName.length();
-		if (nameLength <= 30 && nameLength > 0)
-		{
-			Planet existingPlanet = dao.getPlanetByName(ownerId, planetName);
-			if (existingPlanet == null)
-			{
-				return dao.createPlanet(planet);
-			}
-			return existingPlanet;	//Should this return empty or existing?
+		if (!planetName.isEmpty() && planetName.length() <= 30) {
+			return dao.createPlanet(planet);
 		}
 		return new Planet();
 	}

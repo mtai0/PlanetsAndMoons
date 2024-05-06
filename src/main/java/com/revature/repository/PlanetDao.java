@@ -74,16 +74,47 @@ public class PlanetDao {
 	public Planet createPlanet(Planet p) {
 		Planet newPlanet = new Planet();
 		try(Connection connection = ConnectionUtil.createConnection()) {
-			String sql = "insert into planets (name, ownerId) values (?, ?)";
-			PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			ps.setString(1, p.getName());
-			ps.setInt(2, p.getOwnerId());
-			ps.executeUpdate();
-			ResultSet rs = ps.getGeneratedKeys();
 
-			newPlanet.setId(rs.getInt(1));
-			newPlanet.setName(p.getName());
-			newPlanet.setOwnerId(p.getOwnerId());
+			String planetName = p.getName();
+			int ownerId = p.getOwnerId();
+			//Check if Planet exists with same name
+			{
+				String sql = "select * from planets where name = ? and ownerId = ?";
+				PreparedStatement ps = connection.prepareStatement(sql);
+				ps.setString(1, planetName);
+				ps.setInt(2, ownerId);
+				ResultSet rs = ps.executeQuery();
+				if(rs.next()){
+					return newPlanet;
+				}
+			}
+
+			//Check if Moon exists with same name
+			{
+				String sql = "SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? and moons.name = ?";
+				PreparedStatement ps = connection.prepareStatement(sql);
+				ps.setInt(1, ownerId);
+				ps.setString(2, planetName);
+				ps.executeQuery();
+				ResultSet rs = ps.executeQuery();
+				if (rs.next()) {
+					return newPlanet;
+				}
+			}
+
+			//Create new Planet if it does not exist
+			{
+				String sql = "insert into planets (name, ownerId) values (?, ?)";
+				PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+				ps.setString(1, planetName);
+				ps.setInt(2, ownerId);
+				ps.executeUpdate();
+				ResultSet rs = ps.getGeneratedKeys();
+
+				newPlanet.setId(rs.getInt(1));
+				newPlanet.setName(p.getName());
+				newPlanet.setOwnerId(p.getOwnerId());
+			}
 		}catch (SQLException e){
 			System.out.println(e);
 		}
