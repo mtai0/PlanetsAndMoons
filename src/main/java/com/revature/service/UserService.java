@@ -13,7 +13,6 @@ public class UserService {
 	}
 
 	public User authenticate(UsernamePasswordAuthentication loginRequestData) {
-		// TODO: implement
 		return dao.getUserByUsername(loginRequestData.getUsername());
 	}
 

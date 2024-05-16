@@ -28,7 +28,6 @@ public class UserDao {
         }
     }
 
-   // public User createUser(UsernamePasswordAuthentication registerRequest) {
    public User createUser(UsernamePasswordAuthentication registerRequest) {
        try(Connection connection = ConnectionUtil.createConnection()){
            String sql = "insert into users (username, password) values (?, ?)";
