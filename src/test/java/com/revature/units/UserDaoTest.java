@@ -1,6 +1,7 @@
 package com.revature.units;
 
 import com.revature.models.User;
+import com.revature.models.UsernamePasswordAuthentication;
 import com.revature.repository.UserDao;
 import com.revature.utilities.ConnectionUtil;
 import org.junit.jupiter.api.*;
@@ -15,6 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -86,5 +88,39 @@ public class UserDaoTest {
 
         User actual = dao.getUserByUsername(username);
         Assertions.assertNull(actual);
+    }
+
+    @ParameterizedTest
+    @DisplayName("UserDao::createUser")
+    @Order(2)
+    @CsvSource({
+            "username,password"
+    })
+    public void createUser(String username, String password) {
+        UsernamePasswordAuthentication auth = new UsernamePasswordAuthentication();
+        auth.setUsername(username);
+        auth.setPassword(password);
+
+        PreparedStatement ps = Mockito.mock(PreparedStatement.class);
+        try {
+            when(connection.prepareStatement(
+                    "insert into users (username, password) values (?, ?)",
+                    PreparedStatement.RETURN_GENERATED_KEYS)
+            ).thenReturn(ps);
+            doNothing().when(ps).setString(1, username);
+            doNothing().when(ps).setString(2, password);
+
+            when(ps.executeUpdate()).thenReturn(1);
+            ResultSet results = Mockito.mock(ResultSet.class);
+
+            when(ps.getGeneratedKeys()).thenReturn(results);
+
+            when(results.first()).thenReturn(true);
+            when(results.getInt(1)).thenReturn(0);
+
+            User actual = dao.createUser(auth);
+            boolean credentialsMatch = actual.getUsername().equals(username) && actual.getPassword().equals(password);
+            Assertions.assertTrue(credentialsMatch);
+        } catch (SQLException ignored) {}
     }
 }
