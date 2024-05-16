@@ -12,6 +12,7 @@ import org.mockito.Mockito;
 
 import static org.mockito.Mockito.when;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserServiceTest {
 
     @Mock
@@ -32,7 +33,7 @@ public class UserServiceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("UserService::authenticate - Valid")
+    @DisplayName("UserService::authenticate - Valid Input")
     @Order(0)
     @CsvSource({
             "username,password"
@@ -73,12 +74,12 @@ public class UserServiceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("UserService::register")
+    @DisplayName("UserService::register - Valid Input")
     @Order(2)
     @CsvSource({
             "newUser, password"
     })
-    public void register(String username, String password) {
+    public void registerValid(String username, String password) {
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(password);
