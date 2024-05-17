@@ -44,10 +44,10 @@ public class UserServiceTest {
         loginRequestData.setPassword(password);
 
         User toReturn = new User();
-        toReturn.setUsername(loginRequestData.getUsername());
-        toReturn.setPassword(loginRequestData.getPassword());
+        toReturn.setUsername(username);
+        toReturn.setPassword(password);
 
-        when(dao.getUserByUsername(loginRequestData.getUsername())).thenReturn(toReturn);
+        when(dao.getUserByUsername(username)).thenReturn(toReturn);
 
         User actual = userService.authenticate(loginRequestData);
 
@@ -56,18 +56,47 @@ public class UserServiceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("UserService::authenticate - Invalid")
+    @DisplayName("UserService::authenticate - Invalid Username")
     @Order(1)
     @CsvSource({
-            "username, wrongPassword",
             "wrongUsername, password"
     })
-    public void authenticateInvalid(String username, String password) {
+    public void authenticateInvalidUsername(String username, String password) {
         UsernamePasswordAuthentication loginRequestData = new UsernamePasswordAuthentication();
         loginRequestData.setUsername(username);
         loginRequestData.setPassword(password);
 
-        when(dao.getUserByUsername(loginRequestData.getUsername())).thenReturn(null);
+        when(dao.getUserByUsername(username)).thenReturn(null);
+
+        User actual = userService.authenticate(loginRequestData);
+        Assertions.assertNull(actual);
+    }
+
+    @ParameterizedTest
+    @DisplayName("UserService::authenticate - Invalid Password")
+    @Order(2)
+    @CsvSource({
+            "username, password"
+    })
+    public void authenticateInvalidPassword(String username, String password) {
+        //Create an intentionally wrong password
+        String wrongPassword = password;
+        if (wrongPassword.length() + 1 <= 30) {
+            wrongPassword += "a";
+        }
+        else {
+            wrongPassword = wrongPassword.substring(0, 29);
+        }
+
+        UsernamePasswordAuthentication loginRequestData = new UsernamePasswordAuthentication();
+        loginRequestData.setUsername(username);
+        loginRequestData.setPassword(wrongPassword);
+
+        User toReturn = new User();
+        toReturn.setUsername(username);
+        toReturn.setPassword(password);
+
+        when(dao.getUserByUsername(username)).thenReturn(toReturn);
 
         User actual = userService.authenticate(loginRequestData);
         Assertions.assertNull(actual);
@@ -75,7 +104,7 @@ public class UserServiceTest {
 
     @ParameterizedTest
     @DisplayName("UserService::register - Valid Input")
-    @Order(2)
+    @Order(3)
     @CsvSource({
             "newUser, password"
     })
@@ -89,8 +118,8 @@ public class UserServiceTest {
         auth.setPassword(password);
 
         User returnedUser = new User();
-        returnedUser.setUsername(auth.getUsername());
-        returnedUser.setPassword(auth.getPassword());
+        returnedUser.setUsername(username);
+        returnedUser.setPassword(password);
         when(dao.getUserByUsername(username)).thenReturn(null);
         when(dao.createUser(auth)).thenReturn(returnedUser);
 
@@ -101,7 +130,7 @@ public class UserServiceTest {
 
     @ParameterizedTest
     @DisplayName("UserService::register - Existing Username")
-    @Order(3)
+    @Order(4)
     @CsvSource({
             "existingUser, password"
     })
@@ -115,8 +144,8 @@ public class UserServiceTest {
         auth.setPassword(password);
 
         User returnedUser = new User();
-        returnedUser.setUsername(auth.getUsername());
-        returnedUser.setPassword(auth.getPassword());
+        returnedUser.setUsername(username);
+        returnedUser.setPassword(password);
         when(dao.createUser(auth)).thenReturn(returnedUser);
         when(dao.getUserByUsername(username)).thenReturn(returnedUser);
 
@@ -126,7 +155,7 @@ public class UserServiceTest {
 
     @ParameterizedTest
     @DisplayName("UserService::register - Exceed Length")
-    @Order(4)
+    @Order(5)
     @CsvSource({
             "moreThan30Characters00000000000, password",
             "username, moreThan30Characters00000000000",
@@ -143,7 +172,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("UserService::register - Empty Username")
-    @Order(5)
+    @Order(6)
     public void registerEmptyUsername() {
         User newUser = new User();
         newUser.setUsername("");
@@ -155,7 +184,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("UserService::register - Empty Password")
-    @Order(5)
+    @Order(7)
     public void registerEmptyPassword() {
         User newUser = new User();
         newUser.setUsername("username");
@@ -167,7 +196,7 @@ public class UserServiceTest {
 
     @Test
     @DisplayName("UserService::register - Empty")
-    @Order(6)
+    @Order(8)
     public void registerEmpty() {
         User newUser = new User();
         newUser.setUsername("");
