@@ -13,7 +13,14 @@ public class UserService {
 	}
 
 	public User authenticate(UsernamePasswordAuthentication loginRequestData) {
-		return dao.getUserByUsername(loginRequestData.getUsername());
+		//Controller already verifies, but since this is called Authenticate, this should verify as well.
+		User user = dao.getUserByUsername(loginRequestData.getUsername());
+		if (user != null) {
+			if (!user.getPassword().equals(loginRequestData.getPassword())) {
+				user = null;
+			}
+		}
+		return user;
 	}
 
 	public User register(User registerRequestData) {
