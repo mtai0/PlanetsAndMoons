@@ -64,7 +64,9 @@ public class UserDaoTest {
             when(results.getInt("id")).thenReturn(0);
             when(results.getString("username")).thenReturn(username);
             when(results.getString("password")).thenReturn("fillerPassword");
-        } catch (SQLException ignored) {}
+        } catch (SQLException e){
+            Assertions.fail("SQLException thrown.");
+        }
 
         User actual = dao.getUserByUsername(username);
         Assertions.assertEquals(username, actual.getUsername());
@@ -84,7 +86,9 @@ public class UserDaoTest {
             ResultSet results = Mockito.mock(ResultSet.class);
             when(ps.executeQuery()).thenReturn(results);
             when(results.next()).thenReturn(false);
-        } catch (SQLException ignored) {}
+        } catch (SQLException e){
+            Assertions.fail("SQLException thrown.");
+        }
 
         User actual = dao.getUserByUsername(username);
         Assertions.assertNull(actual);
