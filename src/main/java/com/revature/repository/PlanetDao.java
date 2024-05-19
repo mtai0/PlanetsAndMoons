@@ -95,7 +95,6 @@ public class PlanetDao {
 				PreparedStatement ps = connection.prepareStatement(sql);
 				ps.setInt(1, ownerId);
 				ps.setString(2, planetName);
-				ps.executeQuery();
 				ResultSet rs = ps.executeQuery();
 				if (rs.next()) {
 					return newPlanet;
