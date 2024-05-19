@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MoonDao.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PlanetsAndMoons</a> &gt; <a href="index.source.html" class="el_package">com.revature.repository</a> &gt; <span class="el_source">MoonDao.java</span></div><h1>MoonDao.java</h1><pre class="source lang-java linenums">package com.revature.repository;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.revature.exceptions.MoonFailException;
+import com.revature.models.Moon;
+import com.revature.models.Planet;
+import com.revature.utilities.ConnectionUtil;
+
+<span class="fc" id="L16">public class MoonDao {</span>
+    
+    public List&lt;Moon&gt; getAllMoons(int ownerId) {
+<span class="fc" id="L19">		ArrayList&lt;Moon&gt; moonList = new ArrayList&lt;Moon&gt;();</span>
+<span class="fc" id="L20">		try(Connection connection = ConnectionUtil.createConnection()) {</span>
+<span class="fc" id="L21">			String sql = &quot;SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ?&quot;;</span>
+<span class="fc" id="L22">			PreparedStatement ps = connection.prepareStatement(sql);</span>
+<span class="fc" id="L23">			ps.setInt(1, ownerId);</span>
+<span class="fc" id="L24">			ResultSet rs = ps.executeQuery();</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">			while (rs.next())</span>
+			{
+<span class="fc" id="L27">				Moon newMoon = new Moon();</span>
+<span class="fc" id="L28">				newMoon.setId(rs.getInt(1));</span>
+<span class="fc" id="L29">				newMoon.setName(rs.getString(&quot;name&quot;));</span>
+<span class="fc" id="L30">				newMoon.setMyPlanetId(rs.getInt(&quot;myPlanetId&quot;));</span>
+<span class="fc" id="L31">				moonList.add(newMoon);</span>
+<span class="fc" id="L32">			}</span>
+<span class="nc" id="L33">		}catch (SQLException e){</span>
+<span class="nc" id="L34">			System.out.println(e);</span>
+<span class="fc" id="L35">		}</span>
+<span class="fc" id="L36">		return moonList;</span>
+	}
+
+	public Moon getMoonByName(int ownerId, String moonName) {
+<span class="fc" id="L40">		try(Connection connection = ConnectionUtil.createConnection()) {</span>
+<span class="fc" id="L41">			String sql = &quot;SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? and moons.name = ?&quot;;</span>
+<span class="fc" id="L42">			PreparedStatement ps = connection.prepareStatement(sql);</span>
+<span class="fc" id="L43">			ps.setInt(1, ownerId);</span>
+<span class="fc" id="L44">			ps.setString(2, moonName);</span>
+<span class="fc" id="L45">			ps.executeQuery();</span>
+<span class="fc" id="L46">			ResultSet rs = ps.executeQuery();</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">			if(rs.next()){</span>
+<span class="fc" id="L48">				Moon newMoon = new Moon();</span>
+<span class="fc" id="L49">				newMoon.setId(rs.getInt(1));</span>
+<span class="fc" id="L50">				newMoon.setName(rs.getString(&quot;name&quot;));</span>
+<span class="fc" id="L51">				newMoon.setMyPlanetId(rs.getInt(&quot;myPlanetId&quot;));</span>
+<span class="fc" id="L52">				return newMoon;</span>
+			}
+<span class="pc bpc" id="L54" title="1 of 2 branches missed.">		}catch (SQLException e){</span>
+<span class="nc" id="L55">			System.out.println(e);</span>
+<span class="fc" id="L56">		}</span>
+<span class="fc" id="L57">		return null;</span>
+	}
+
+	public Moon getMoonById(int ownerId, int moonId) {
+<span class="fc" id="L61">		try(Connection connection = ConnectionUtil.createConnection()) {</span>
+<span class="fc" id="L62">			String sql = &quot;SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? and moons.id = ?&quot;;</span>
+<span class="fc" id="L63">			PreparedStatement ps = connection.prepareStatement(sql);</span>
+<span class="fc" id="L64">			ps.setInt(1, ownerId);</span>
+<span class="fc" id="L65">			ps.setInt(2, moonId);</span>
+<span class="fc" id="L66">			ResultSet rs = ps.executeQuery();</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">			if(rs.next()){</span>
+<span class="fc" id="L68">				Moon newMoon = new Moon();</span>
+<span class="fc" id="L69">				newMoon.setId(rs.getInt(1));</span>
+<span class="fc" id="L70">				newMoon.setName(rs.getString(&quot;name&quot;));</span>
+<span class="fc" id="L71">				newMoon.setMyPlanetId(rs.getInt(&quot;myPlanetId&quot;));</span>
+<span class="fc" id="L72">				return newMoon;</span>
+			}
+<span class="pc bpc" id="L74" title="1 of 2 branches missed.">		}catch (SQLException e){</span>
+<span class="nc" id="L75">			System.out.println(e);</span>
+<span class="fc" id="L76">		}</span>
+<span class="fc" id="L77">		return null;</span>
+	}
+
+	public Moon createMoon(int ownerId, Moon m) {
+<span class="fc" id="L81">		Moon newMoon = new Moon();</span>
+<span class="fc" id="L82">		try(Connection connection = ConnectionUtil.createConnection()) {</span>
+<span class="fc" id="L83">			String moonName = m.getName();</span>
+
+			//Make sure the user owns the planet first.
+			{
+<span class="fc" id="L87">				String sql = &quot;select * from planets where id = ? and ownerId = ?&quot;;</span>
+<span class="fc" id="L88">				PreparedStatement ps = connection.prepareStatement(sql);</span>
+<span class="fc" id="L89">				ps.setInt(1, m.getMyPlanetId());</span>
+<span class="fc" id="L90">				ps.setInt(2, ownerId);</span>
+<span class="fc" id="L91">				ResultSet rs = ps.executeQuery();</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">				if(!rs.next()) {</span>
+<span class="fc" id="L93">					return newMoon;</span>
+				}
+			}
+
+			//Check if Moon exists with same name
+			{
+<span class="fc" id="L99">				String sql = &quot;SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? and moons.name = ?&quot;;</span>
+<span class="fc" id="L100">				PreparedStatement ps = connection.prepareStatement(sql);</span>
+<span class="fc" id="L101">				ps.setInt(1, ownerId);</span>
+<span class="fc" id="L102">				ps.setString(2, moonName);</span>
+<span class="fc" id="L103">				ps.executeQuery();</span>
+<span class="fc" id="L104">				ResultSet rs = ps.executeQuery();</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">				if (rs.next()) {</span>
+<span class="fc" id="L106">					return newMoon;</span>
+				}
+			}
+
+			//Check if Planet exists with same name
+			{
+<span class="fc" id="L112">				String sql = &quot;select * from planets where name = ? and ownerId = ?&quot;;</span>
+<span class="fc" id="L113">				PreparedStatement ps = connection.prepareStatement(sql);</span>
+<span class="fc" id="L114">				ps.setString(1, moonName);</span>
+<span class="fc" id="L115">				ps.setInt(2, ownerId);</span>
+<span class="fc" id="L116">				ResultSet rs = ps.executeQuery();</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">				if(rs.next()){</span>
+<span class="fc" id="L118">					return newMoon;</span>
+				}
+			}
+
+<span class="fc" id="L122">			String sql = &quot;insert into moons (name, myPlanetId) values (?, ?)&quot;;</span>
+<span class="fc" id="L123">			PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);</span>
+<span class="fc" id="L124">			ps.setString(1, m.getName());</span>
+<span class="fc" id="L125">			ps.setInt(2, m.getMyPlanetId());</span>
+<span class="fc" id="L126">			ps.executeUpdate();</span>
+<span class="fc" id="L127">			ResultSet rs = ps.getGeneratedKeys();</span>
+
+<span class="fc" id="L129">			newMoon.setId(rs.getInt(1));</span>
+<span class="fc" id="L130">			newMoon.setName(m.getName());</span>
+<span class="fc" id="L131">			newMoon.setMyPlanetId(m.getMyPlanetId());</span>
+<span class="pc bpc" id="L132" title="3 of 6 branches missed.">		}catch (SQLException e){</span>
+<span class="nc" id="L133">			System.out.println(e);</span>
+<span class="fc" id="L134">		}</span>
+<span class="fc" id="L135">		return newMoon;</span>
+	}
+
+	public boolean deleteMoonById(int ownerId, int moonId) {
+<span class="fc" id="L139">		try(Connection connection = ConnectionUtil.createConnection()) {</span>
+			//Make sure the user owns the moon first.
+			{
+<span class="fc" id="L142">				String sql = &quot;SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? AND moons.id = ?&quot;;</span>
+<span class="fc" id="L143">				PreparedStatement ps = connection.prepareStatement(sql);</span>
+<span class="fc" id="L144">				ps.setInt(1, ownerId);</span>
+<span class="fc" id="L145">				ps.setInt(2, moonId);</span>
+<span class="fc" id="L146">				ResultSet rs = ps.executeQuery();</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">				if(!rs.next()) {</span>
+<span class="fc" id="L148">					return false;</span>
+				}
+			}
+
+<span class="fc" id="L152">			String sql = &quot;DELETE FROM moons WHERE id = ?&quot;;</span>
+<span class="fc" id="L153">			PreparedStatement ps = connection.prepareStatement(sql);</span>
+<span class="fc" id="L154">			ps.setInt(1, moonId);</span>
+<span class="fc" id="L155">			int rowsAffected = ps.executeUpdate();</span>
+<span class="pc bpc" id="L156" title="1 of 2 branches missed.">			if (rowsAffected &gt; 0) return true;</span>
+<span class="pc bpc" id="L157" title="2 of 4 branches missed.">		}catch (SQLException e){</span>
+<span class="nc" id="L158">			System.out.println(e);</span>
+<span class="nc" id="L159">		}</span>
+<span class="nc" id="L160">		System.out.println(&quot;Failed to delete.&quot;);</span>
+<span class="nc" id="L161">		return false;</span>
+	}
+
+	public List&lt;Moon&gt; getMoonsFromPlanet(int ownerId, int planetId) {
+<span class="fc" id="L165">		ArrayList&lt;Moon&gt; moonList = new ArrayList&lt;Moon&gt;();</span>
+<span class="fc" id="L166">		try(Connection connection = ConnectionUtil.createConnection()) {</span>
+<span class="fc" id="L167">			String sql = &quot;SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? AND planets.id = ?&quot;;</span>
+<span class="fc" id="L168">			PreparedStatement ps = connection.prepareStatement(sql);</span>
+<span class="fc" id="L169">			ps.setInt(1, ownerId);</span>
+<span class="fc" id="L170">			ps.setInt(2, planetId);</span>
+<span class="fc" id="L171">			ResultSet rs = ps.executeQuery();</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">			while (rs.next())</span>
+			{
+<span class="fc" id="L174">				Moon newMoon = new Moon();</span>
+<span class="fc" id="L175">				newMoon.setId(rs.getInt(1));</span>
+<span class="fc" id="L176">				newMoon.setName(rs.getString(&quot;name&quot;));</span>
+<span class="fc" id="L177">				newMoon.setMyPlanetId(rs.getInt(&quot;myPlanetId&quot;));</span>
+<span class="fc" id="L178">				moonList.add(newMoon);</span>
+<span class="fc" id="L179">			}</span>
+<span class="nc" id="L180">		}catch (SQLException e){</span>
+<span class="nc" id="L181">			System.out.println(e);</span>
+<span class="fc" id="L182">		}</span>
+<span class="fc" id="L183">		return moonList;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

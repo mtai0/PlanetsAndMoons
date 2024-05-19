@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>UserService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">PlanetsAndMoons</a> &gt; <a href="index.source.html" class="el_package">com.revature.service</a> &gt; <span class="el_source">UserService.java</span></div><h1>UserService.java</h1><pre class="source lang-java linenums">package com.revature.service;
+
+import com.revature.models.User;
+import com.revature.models.UsernamePasswordAuthentication;
+import com.revature.repository.UserDao;
+
+public class UserService {
+
+	private UserDao dao;
+
+<span class="fc" id="L11">	public UserService(UserDao dao){</span>
+<span class="fc" id="L12">		this.dao = dao;</span>
+<span class="fc" id="L13">	}</span>
+
+	public User authenticate(UsernamePasswordAuthentication loginRequestData) {
+		//Controller already verifies, but since this is called Authenticate, this should verify as well.
+<span class="fc" id="L17">		User user = dao.getUserByUsername(loginRequestData.getUsername());</span>
+<span class="fc bfc" id="L18" title="All 2 branches covered.">		if (user != null) {</span>
+<span class="fc bfc" id="L19" title="All 2 branches covered.">			if (!user.getPassword().equals(loginRequestData.getPassword())) {</span>
+<span class="fc" id="L20">				user = null;</span>
+			}
+		}
+<span class="fc" id="L23">		return user;</span>
+	}
+
+	public User register(User registerRequestData) {
+		// check that username and password are within acceptable length
+<span class="fc" id="L28">		String userName = registerRequestData.getUsername();</span>
+<span class="fc" id="L29">		String password = registerRequestData.getPassword();</span>
+
+<span class="fc bfc" id="L31" title="All 8 branches covered.">		if (!userName.isEmpty() &amp;&amp; userName.length() &lt;= 30 &amp;&amp; !password.isEmpty() &amp;&amp; password.length() &lt;= 30){</span>
+			// if the lengths are acceptable check that the username is unique
+<span class="fc bfc" id="L33" title="All 2 branches covered.">			if(dao.getUserByUsername(registerRequestData.getUsername()) == null){</span>
+				// if the username is unique go ahead and actually create the new user
+<span class="fc" id="L35">				UsernamePasswordAuthentication validUserData = new UsernamePasswordAuthentication();</span>
+<span class="fc" id="L36">				validUserData.setUsername(registerRequestData.getUsername());</span>
+<span class="fc" id="L37">				validUserData.setPassword(registerRequestData.getPassword());</span>
+				// make sure to return the new user's data
+<span class="fc" id="L39">				return dao.createUser(validUserData);</span>
+			}
+		}
+		// if the user data does not meet business or software requirements return a null object
+<span class="fc" id="L43">		return null;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

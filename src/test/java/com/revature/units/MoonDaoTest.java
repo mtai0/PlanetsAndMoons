@@ -30,6 +30,11 @@ public class MoonDaoTest {
         connectionUtils = Mockito.mockStatic(ConnectionUtil.class);
     }
 
+    @AfterAll
+    public static void unmockConnectionUtil() {
+        connectionUtils.close();
+    }
+
     @BeforeEach
     public void setup() {
         connection = Mockito.mock(Connection.class);
