@@ -10,10 +10,7 @@ import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.List;
 
 import static org.mockito.Mockito.*;
@@ -224,6 +221,257 @@ public class MoonDaoTest {
 
             Moon actual = dao.getMoonById(ownerId, moonId);
             Assertions.assertNull(actual);
+        }
+        catch (SQLException e){
+            Assertions.fail("SQLException thrown.");
+        }
+    }
+
+    @ParameterizedTest
+    @DisplayName("MoonDao::createMoon - Success")
+    @Order(6)
+    @CsvSource({
+            "1,1,Moon1",
+            "1,1,Moon2",
+            "1,2,Moon3",
+            "1,2,Moon4"
+    })
+    public void createMoonSuccess(int ownerId, int myPlanetId, String name) {
+        PreparedStatement psCheckOwnership = Mockito.mock(PreparedStatement.class);
+        PreparedStatement psMoonExists = Mockito.mock(PreparedStatement.class);
+        PreparedStatement psPlanetExists = Mockito.mock(PreparedStatement.class);
+        PreparedStatement psInsert = Mockito.mock(PreparedStatement.class);
+        try {
+            when(connection.prepareStatement("select * from planets where id = ? and ownerId = ?")).thenReturn(psCheckOwnership);
+            doNothing().when(psCheckOwnership).setInt(1, myPlanetId);
+            doNothing().when(psCheckOwnership).setInt(2, ownerId);
+            ResultSet resultsOwnership = Mockito.mock(ResultSet.class);
+            when(psCheckOwnership.executeQuery()).thenReturn(resultsOwnership);
+            when(resultsOwnership.next()).thenReturn(true);
+
+            when(connection.prepareStatement("SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? and moons.name = ?")).thenReturn(psMoonExists);
+            doNothing().when(psMoonExists).setInt(1, ownerId);
+            doNothing().when(psMoonExists).setString(2, name);
+            ResultSet resultsMoonExists = Mockito.mock(ResultSet.class);
+            when(psMoonExists.executeQuery()).thenReturn(resultsMoonExists);
+            when(resultsMoonExists.next()).thenReturn(false);
+
+            when(connection.prepareStatement("select * from planets where name = ? and ownerId = ?")).thenReturn(psPlanetExists);
+            doNothing().when(psPlanetExists).setString(1, name);
+            doNothing().when(psPlanetExists).setInt(2, ownerId);
+            ResultSet resultsPlanetExists = Mockito.mock(ResultSet.class);
+            when(psPlanetExists.executeQuery()).thenReturn(resultsPlanetExists);
+            when(resultsPlanetExists.next()).thenReturn(false);
+
+            when(connection.prepareStatement("insert into moons (name, myPlanetId) values (?, ?)", Statement.RETURN_GENERATED_KEYS)).thenReturn(psInsert);
+            doNothing().when(psInsert).setString(1, name);
+            doNothing().when(psInsert).setInt(2, myPlanetId);
+            when(psInsert.executeUpdate()).thenReturn(1);
+            ResultSet resultsInsert = Mockito.mock(ResultSet.class);
+            when(psInsert.getGeneratedKeys()).thenReturn(resultsInsert);
+            when(resultsInsert.getInt(1)).thenReturn(1);
+
+            Moon expected = new Moon();
+            expected.setName(name);
+            expected.setMyPlanetId(myPlanetId);
+
+            Moon actual = dao.createMoon(ownerId, expected);
+            boolean condition = name.equals(actual.getName()) && myPlanetId == actual.getMyPlanetId();
+            Assertions.assertTrue(condition);
+        }
+        catch (SQLException e){
+            Assertions.fail("SQLException thrown.");
+        }
+    }
+
+    @Test
+    @DisplayName("MoonDao::createMoon - Failure - Ownership")
+    @Order(7)
+    public void createMoonFailureOwnership() {
+        int ownerId = -1;
+        int myPlanetId = 1;
+        String name = "Placeholder";
+
+        PreparedStatement psCheckOwnership = Mockito.mock(PreparedStatement.class);
+        try {
+            when(connection.prepareStatement("select * from planets where id = ? and ownerId = ?")).thenReturn(psCheckOwnership);
+            doNothing().when(psCheckOwnership).setInt(1, myPlanetId);
+            doNothing().when(psCheckOwnership).setInt(2, ownerId);
+            ResultSet resultsOwnership = Mockito.mock(ResultSet.class);
+            when(psCheckOwnership.executeQuery()).thenReturn(resultsOwnership);
+            when(resultsOwnership.next()).thenReturn(false);
+
+
+            Moon expected = new Moon();
+            Moon actual = dao.createMoon(ownerId, expected);
+            boolean condition = actual.getName() == null
+                    && actual.getId() == expected.getId()
+                    && actual.getMyPlanetId() == actual.getMyPlanetId();
+            Assertions.assertTrue(condition);
+        }
+        catch (SQLException e){
+            Assertions.fail("SQLException thrown.");
+        }
+    }
+
+    @Test
+    @DisplayName("MoonDao::createMoon - Failure - Moon Exists")
+    @Order(8)
+    public void createMoonFailureMoonExists() {
+        int ownerId = 1;
+        int myPlanetId = 1;
+        String name = "ExistingMoon";
+
+        PreparedStatement psCheckOwnership = Mockito.mock(PreparedStatement.class);
+        PreparedStatement psMoonExists = Mockito.mock(PreparedStatement.class);
+        try {
+            when(connection.prepareStatement("select * from planets where id = ? and ownerId = ?")).thenReturn(psCheckOwnership);
+            doNothing().when(psCheckOwnership).setInt(1, myPlanetId);
+            doNothing().when(psCheckOwnership).setInt(2, ownerId);
+            ResultSet resultsOwnership = Mockito.mock(ResultSet.class);
+            when(psCheckOwnership.executeQuery()).thenReturn(resultsOwnership);
+            when(resultsOwnership.next()).thenReturn(true);
+
+            when(connection.prepareStatement("SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? and moons.name = ?")).thenReturn(psMoonExists);
+            doNothing().when(psMoonExists).setInt(1, ownerId);
+            doNothing().when(psMoonExists).setString(2, name);
+            ResultSet resultsMoonExists = Mockito.mock(ResultSet.class);
+            when(psMoonExists.executeQuery()).thenReturn(resultsMoonExists);
+            when(resultsMoonExists.next()).thenReturn(true);
+
+            Moon expected = new Moon();
+            Moon actual = dao.createMoon(ownerId, expected);
+            boolean condition = actual.getName() == null
+                    && actual.getId() == expected.getId()
+                    && actual.getMyPlanetId() == actual.getMyPlanetId();
+            Assertions.assertTrue(condition);
+        }
+        catch (SQLException e){
+            Assertions.fail("SQLException thrown.");
+        }
+    }
+
+    @Test
+    @DisplayName("MoonDao::createMoon - Failure - Planet Exists")
+    @Order(9)
+    public void createMoonFailurePlanetExists() {
+        int ownerId = 1;
+        int myPlanetId = 1;
+        String name = "ExistingMoon";
+
+        PreparedStatement psCheckOwnership = Mockito.mock(PreparedStatement.class);
+        PreparedStatement psMoonExists = Mockito.mock(PreparedStatement.class);
+        PreparedStatement psPlanetExists = Mockito.mock(PreparedStatement.class);
+        try {
+            when(connection.prepareStatement("select * from planets where id = ? and ownerId = ?")).thenReturn(psCheckOwnership);
+            doNothing().when(psCheckOwnership).setInt(1, myPlanetId);
+            doNothing().when(psCheckOwnership).setInt(2, ownerId);
+            ResultSet resultsOwnership = Mockito.mock(ResultSet.class);
+            when(psCheckOwnership.executeQuery()).thenReturn(resultsOwnership);
+            when(resultsOwnership.next()).thenReturn(true);
+
+            when(connection.prepareStatement("SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? and moons.name = ?")).thenReturn(psMoonExists);
+            doNothing().when(psMoonExists).setInt(1, ownerId);
+            doNothing().when(psMoonExists).setString(2, name);
+            ResultSet resultsMoonExists = Mockito.mock(ResultSet.class);
+            when(psMoonExists.executeQuery()).thenReturn(resultsMoonExists);
+            when(resultsMoonExists.next()).thenReturn(false);
+
+            when(connection.prepareStatement("select * from planets where name = ? and ownerId = ?")).thenReturn(psPlanetExists);
+            doNothing().when(psPlanetExists).setString(1, name);
+            doNothing().when(psPlanetExists).setInt(2, ownerId);
+            ResultSet resultsPlanetExists = Mockito.mock(ResultSet.class);
+            when(psPlanetExists.executeQuery()).thenReturn(resultsPlanetExists);
+            when(resultsPlanetExists.next()).thenReturn(true);
+
+            Moon expected = new Moon();
+            Moon actual = dao.createMoon(ownerId, expected);
+            boolean condition = actual.getName() == null
+                    && actual.getId() == expected.getId()
+                    && actual.getMyPlanetId() == actual.getMyPlanetId();
+            Assertions.assertTrue(condition);
+        }
+        catch (SQLException e){
+            Assertions.fail("SQLException thrown.");
+        }
+    }
+
+    @ParameterizedTest
+    @DisplayName("MoonDao::deleteMoonById - Success")
+    @Order(10)
+    @CsvSource({
+            "1,1",
+            "1,2",
+            "2,3",
+            "2,4"
+    })
+    public void deleteMoonByIdSuccess(int ownerId, int moonId) {
+        PreparedStatement psCheckOwnership = Mockito.mock(PreparedStatement.class);
+        PreparedStatement psDelete = Mockito.mock(PreparedStatement.class);
+        try {
+            when(connection.prepareStatement("SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? AND moons.id = ?")).thenReturn(psCheckOwnership);
+            doNothing().when(psCheckOwnership).setInt(1, ownerId);
+            doNothing().when(psCheckOwnership).setInt(2,moonId);
+            ResultSet resultsOwnership = Mockito.mock(ResultSet.class);
+            when(psCheckOwnership.executeQuery()).thenReturn(resultsOwnership);
+            when(resultsOwnership.next()).thenReturn(true);
+
+            when(connection.prepareStatement("DELETE FROM moons WHERE id = ?")).thenReturn(psDelete);
+            doNothing().when(psDelete).setInt(1, moonId);
+            when(psDelete.executeUpdate()).thenReturn(1);
+
+            Assertions.assertTrue(dao.deleteMoonById(ownerId, moonId));
+        }
+        catch (SQLException e){
+            Assertions.fail("SQLException thrown.");
+        }
+    }
+
+    @Test
+    @DisplayName("MoonDao::deleteMoonById - Failure - Ownership")
+    @Order(11)
+    public void deleteMoonByIdFailureOwnership() {
+        int ownerId = -1;
+        int moonId = 1;
+
+        PreparedStatement psCheckOwnership = Mockito.mock(PreparedStatement.class);
+        try {
+            when(connection.prepareStatement("SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? AND moons.id = ?")).thenReturn(psCheckOwnership);
+            doNothing().when(psCheckOwnership).setInt(1, ownerId);
+            doNothing().when(psCheckOwnership).setInt(2,moonId);
+            ResultSet resultsOwnership = Mockito.mock(ResultSet.class);
+            when(psCheckOwnership.executeQuery()).thenReturn(resultsOwnership);
+            when(resultsOwnership.next()).thenReturn(false);
+
+            Assertions.assertFalse(dao.deleteMoonById(ownerId, moonId));
+        }
+        catch (SQLException e){
+            Assertions.fail("SQLException thrown.");
+        }
+    }
+
+    @Test
+    @DisplayName("MoonDao::deleteMoonById - Failure")
+    @Order(12)
+    public void deleteMoonByIdFailure() {
+        int ownerId = 1;
+        int moonId = -1;
+
+        PreparedStatement psCheckOwnership = Mockito.mock(PreparedStatement.class);
+        PreparedStatement psDelete = Mockito.mock(PreparedStatement.class);
+        try {
+            when(connection.prepareStatement("SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? AND moons.id = ?")).thenReturn(psCheckOwnership);
+            doNothing().when(psCheckOwnership).setInt(1, ownerId);
+            doNothing().when(psCheckOwnership).setInt(2,moonId);
+            ResultSet resultsOwnership = Mockito.mock(ResultSet.class);
+            when(psCheckOwnership.executeQuery()).thenReturn(resultsOwnership);
+            when(resultsOwnership.next()).thenReturn(false);
+
+            when(connection.prepareStatement("DELETE FROM moons WHERE id = ?")).thenReturn(psDelete);
+            doNothing().when(psDelete).setInt(1, moonId);
+            when(psDelete.executeUpdate()).thenReturn(0);
+
+            Assertions.assertFalse(dao.deleteMoonById(ownerId, moonId));
         }
         catch (SQLException e){
             Assertions.fail("SQLException thrown.");
