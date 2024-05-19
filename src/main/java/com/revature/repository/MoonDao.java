@@ -21,7 +21,6 @@ public class MoonDao {
 			String sql = "SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ?";
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setInt(1, ownerId);
-			ps.executeQuery();
 			ResultSet rs = ps.executeQuery();
 			while (rs.next())
 			{

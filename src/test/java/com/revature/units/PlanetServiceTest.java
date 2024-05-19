@@ -91,7 +91,7 @@ public class PlanetServiceTest {
     @Order(3)
     public void getPlanetByNameFailure() {
         int ownerId = 1;
-        String planetName = "PlanetDoesNotExist";
+        String planetName = "CannotFind";
 
         when(dao.getPlanetByName(ownerId, planetName)).thenReturn(null);
         Planet actual = planetService.getPlanetByName(ownerId, planetName);

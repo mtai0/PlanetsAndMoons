@@ -61,7 +61,7 @@ public class PlanetDaoTest {
             ResultSet results = Mockito.mock(ResultSet.class);
             when(ps.executeQuery()).thenReturn(results);
 
-            //Fake resultset iteration.
+            //Fake resultset iteration. Unsafe.
             var ref = new Object() {
                 int currentRow = 0;
             };
@@ -71,9 +71,9 @@ public class PlanetDaoTest {
                 return ref.currentRow <= 1;
             }).when(results).next();
 
-            doAnswer(invocationOnMock -> planet1.getId()).when(results).getInt(1);
-            doAnswer(invocationOnMock -> planet1.getName()).when(results).getString("name");
-            doAnswer(invocationOnMock -> planet1.getOwnerId()).when(results).getInt("ownerId");
+            when(results.getInt(1)).thenReturn(planet1.getId());
+            when(results.getString("name")).thenReturn(planet1.getName());
+            when(results.getInt("ownerId")).thenReturn(planet1.getOwnerId());
 
             List<Planet> planetList = dao.getAllPlanets(1);
             boolean correctSize = planetList.size() == 1;
@@ -86,7 +86,6 @@ public class PlanetDaoTest {
             }
             Assertions.assertTrue(planetsMatch);
         } catch (SQLException e){
-            e.printStackTrace();
             Assertions.fail("SQLException thrown.");
         }
     }
@@ -106,7 +105,6 @@ public class PlanetDaoTest {
             Assertions.assertEquals(0, planetList.size());
         }
         catch (SQLException e){
-            e.printStackTrace();
             Assertions.fail("SQLException thrown.");
         }
     }
@@ -137,7 +135,6 @@ public class PlanetDaoTest {
             Assertions.assertTrue(planetMatches);
         }
         catch (SQLException e){
-            e.printStackTrace();
             Assertions.fail("SQLException thrown.");
         }
     }
@@ -154,11 +151,10 @@ public class PlanetDaoTest {
             when(ps.executeQuery()).thenReturn(results);
             when(results.next()).thenReturn(false);
 
-            Planet actual = dao.getPlanetByName(1, "ThisPlanetDoesNotExist");
+            Planet actual = dao.getPlanetByName(1, "CannotFind");
             Assertions.assertNull(actual);
         }
         catch (SQLException e){
-            e.printStackTrace();
             Assertions.fail("SQLException thrown.");
         }
     }
@@ -191,7 +187,6 @@ public class PlanetDaoTest {
             Assertions.assertTrue(planetMatches);
         }
         catch (SQLException e){
-            e.printStackTrace();
             Assertions.fail("SQLException thrown.");
         }
     }
@@ -212,7 +207,6 @@ public class PlanetDaoTest {
             Assertions.assertNull(actual);
         }
         catch (SQLException e){
-            e.printStackTrace();
             Assertions.fail("SQLException thrown.");
         }
     }
@@ -267,7 +261,6 @@ public class PlanetDaoTest {
             Assertions.assertTrue(condition);
         }
         catch (SQLException e){
-            e.printStackTrace();
             Assertions.fail("SQLException thrown.");
         }
     }
@@ -303,7 +296,6 @@ public class PlanetDaoTest {
             Assertions.assertTrue(condition);
         }
         catch (SQLException e){
-            e.printStackTrace();
             Assertions.fail("SQLException thrown.");
         }
     }
@@ -347,7 +339,6 @@ public class PlanetDaoTest {
             Assertions.assertTrue(condition);
         }
         catch (SQLException e){
-            e.printStackTrace();
             Assertions.fail("SQLException thrown.");
         }
     }
@@ -375,7 +366,6 @@ public class PlanetDaoTest {
             Assertions.assertTrue(dao.deletePlanetById(ownerId, planetId));
         }
         catch (SQLException e){
-            e.printStackTrace();
             Assertions.fail("SQLException thrown.");
         }
     }
@@ -403,7 +393,6 @@ public class PlanetDaoTest {
             Assertions.assertTrue(dao.deletePlanetById(ownerId, planetId));
         }
         catch (SQLException e){
-            e.printStackTrace();
             Assertions.fail("SQLException thrown.");
         }
     }
@@ -427,7 +416,6 @@ public class PlanetDaoTest {
             Assertions.assertFalse(dao.deletePlanetById(ownerId, planetId));
         }
         catch (SQLException e){
-            e.printStackTrace();
             Assertions.fail("SQLException thrown.");
         }
     }

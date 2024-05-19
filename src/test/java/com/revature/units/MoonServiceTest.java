@@ -1,7 +1,6 @@
 package com.revature.units;
 
 import com.revature.models.Moon;
-import com.revature.models.Planet;
 import com.revature.repository.MoonDao;
 import com.revature.service.MoonService;
 import org.junit.jupiter.api.*;
@@ -93,7 +92,7 @@ public class MoonServiceTest {
     @Order(3)
     public void getMoonByNameFailure() {
         int ownerId = 1;
-        String moonName = "ThisMoonDoesNotExist";
+        String moonName = "CannotFind";
         when(dao.getMoonByName(ownerId, moonName)).thenReturn(null);
         Moon actual = moonService.getMoonByName(ownerId, moonName);
         Assertions.assertNull(actual);
