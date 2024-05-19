@@ -36,18 +36,17 @@ import java.sql.*;
 <span class="fc" id="L36">           ps.setString(2, registerRequest.getPassword());</span>
 <span class="fc" id="L37">           ps.executeUpdate();</span>
 <span class="fc" id="L38">           ResultSet rs = ps.getGeneratedKeys();</span>
-<span class="pc bpc" id="L39" title="1 of 2 branches missed.">           if(rs.first()){</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">           if(rs.first()){</span>
 <span class="fc" id="L40">               User createdUser = new User();</span>
 <span class="fc" id="L41">               createdUser.setId(rs.getInt(1));</span>
 <span class="fc" id="L42">               createdUser.setUsername(registerRequest.getUsername());</span>
 <span class="fc" id="L43">               createdUser.setPassword(registerRequest.getPassword());</span>
 <span class="fc" id="L44">               return createdUser;</span>
            }
-<span class="nc" id="L46">           return new User();</span>
-<span class="pc bpc" id="L47" title="1 of 2 branches missed.">       } catch (SQLException e){</span>
-<span class="nc" id="L48">           System.out.println(e);</span>
-<span class="nc" id="L49">           return new User();</span>
-       }
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">       } catch (SQLException e){</span>
+<span class="nc" id="L47">           System.out.println(e);</span>
+<span class="fc" id="L48">       }</span>
+<span class="fc" id="L49">       return new User();</span>
    }
 
 }

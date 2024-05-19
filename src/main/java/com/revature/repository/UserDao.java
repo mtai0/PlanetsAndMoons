@@ -43,11 +43,10 @@ public class UserDao {
                createdUser.setPassword(registerRequest.getPassword());
                return createdUser;
            }
-           return new User();
        } catch (SQLException e){
            System.out.println(e);
-           return new User();
        }
+       return new User();
    }
 
 }

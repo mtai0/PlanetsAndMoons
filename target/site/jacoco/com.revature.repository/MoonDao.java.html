@@ -153,12 +153,12 @@ import com.revature.utilities.ConnectionUtil;
 <span class="fc" id="L153">			PreparedStatement ps = connection.prepareStatement(sql);</span>
 <span class="fc" id="L154">			ps.setInt(1, moonId);</span>
 <span class="fc" id="L155">			int rowsAffected = ps.executeUpdate();</span>
-<span class="pc bpc" id="L156" title="1 of 2 branches missed.">			if (rowsAffected &gt; 0) return true;</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">			if (rowsAffected &gt; 0) return true;</span>
 <span class="pc bpc" id="L157" title="2 of 4 branches missed.">		}catch (SQLException e){</span>
 <span class="nc" id="L158">			System.out.println(e);</span>
-<span class="nc" id="L159">		}</span>
-<span class="nc" id="L160">		System.out.println(&quot;Failed to delete.&quot;);</span>
-<span class="nc" id="L161">		return false;</span>
+<span class="fc" id="L159">		}</span>
+<span class="fc" id="L160">		System.out.println(&quot;Failed to delete.&quot;);</span>
+<span class="fc" id="L161">		return false;</span>
 	}
 
 	public List&lt;Moon&gt; getMoonsFromPlanet(int ownerId, int planetId) {

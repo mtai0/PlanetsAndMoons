@@ -470,7 +470,7 @@ public class MoonDaoTest {
             doNothing().when(psCheckOwnership).setInt(2,moonId);
             ResultSet resultsOwnership = Mockito.mock(ResultSet.class);
             when(psCheckOwnership.executeQuery()).thenReturn(resultsOwnership);
-            when(resultsOwnership.next()).thenReturn(false);
+            when(resultsOwnership.next()).thenReturn(true);
 
             when(connection.prepareStatement("DELETE FROM moons WHERE id = ?")).thenReturn(psDelete);
             doNothing().when(psDelete).setInt(1, moonId);

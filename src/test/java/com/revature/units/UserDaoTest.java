@@ -53,7 +53,7 @@ public class UserDaoTest {
     }
 
     @ParameterizedTest
-    @DisplayName("UserDao::getUserByUsername - Valid Input")
+    @DisplayName("UserDao::getUserByUsername - Success")
     @Order(0)
     @CsvSource({
             "username",
@@ -80,7 +80,7 @@ public class UserDaoTest {
     }
 
     @Test
-    @DisplayName("UserDao::getUserByUsername - User Not Found")
+    @DisplayName("UserDao::getUserByUsername - Failure - User Not Found")
     @Order(1)
     public void getUserByUsernameNotFound() {
         String username = "UserDoesNotExist";
@@ -100,14 +100,14 @@ public class UserDaoTest {
     }
 
     @ParameterizedTest
-    @DisplayName("UserDao::createUser")
+    @DisplayName("UserDao::createUser - Success")
     @Order(2)
     @CsvSource({
             "username,password",
             "test,testpassword",
             "user3,12345"
     })
-    public void createUser(String username, String password) {
+    public void createUserSuccess(String username, String password) {
         UsernamePasswordAuthentication auth = new UsernamePasswordAuthentication();
         auth.setUsername(username);
         auth.setPassword(password);
@@ -132,6 +132,39 @@ public class UserDaoTest {
             User actual = dao.createUser(auth);
             boolean credentialsMatch = actual.getUsername().equals(username) && actual.getPassword().equals(password);
             Assertions.assertTrue(credentialsMatch);
+        } catch (SQLException ignored) {}
+    }
+
+    @Test
+    @DisplayName("UserDao::createUser - Failure")
+    @Order(3)
+    public void createUserFailure() {
+        String username = "test";
+        String password = "test";
+        UsernamePasswordAuthentication auth = new UsernamePasswordAuthentication();
+        auth.setUsername(username);
+        auth.setPassword(password);
+
+        PreparedStatement ps = Mockito.mock(PreparedStatement.class);
+        try {
+            when(connection.prepareStatement(
+                    "insert into users (username, password) values (?, ?)",
+                    PreparedStatement.RETURN_GENERATED_KEYS)
+            ).thenReturn(ps);
+            doNothing().when(ps).setString(1, username);
+            doNothing().when(ps).setString(2, password);
+
+            when(ps.executeUpdate()).thenReturn(1);
+            ResultSet results = Mockito.mock(ResultSet.class);
+
+            when(ps.getGeneratedKeys()).thenReturn(results);
+
+            when(results.first()).thenReturn(false);
+
+            User expected = new User();
+            User actual = dao.createUser(auth);
+            boolean condition = actual.getUsername() == null && actual.getPassword() == null && actual.getId() == expected.getId();
+            Assertions.assertTrue(condition);
         } catch (SQLException ignored) {}
     }
 }
