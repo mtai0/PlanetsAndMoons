@@ -2,14 +2,11 @@ package com.revature.units;
 
 import com.revature.models.Planet;
 import com.revature.repository.PlanetDao;
-import com.revature.repository.UserDao;
 import com.revature.service.PlanetService;
-import com.revature.service.UserService;
 import org.junit.jupiter.api.*;
 import org.mockito.Mock;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.util.ArrayList;
@@ -39,24 +36,25 @@ public class PlanetServiceTest {
     @Test
     @DisplayName("PlanetService::getAllPlanets - Success")
     @Order(0)
-    public void getAllPlanetsSingle() {
-        ArrayList<Planet> toReturn = new ArrayList<Planet>();
+    public void getAllPlanetsSuccess() {
+        ArrayList<Planet> input = new ArrayList<Planet>();
         Planet p1 = new Planet();
         p1.setName("Planet 1");
         p1.setOwnerId(1);
         p1.setId(1);
-        toReturn.add(p1);
+        input.add(p1);
 
         Planet p2 = new Planet();
         p2.setName("Planet 2");
         p2.setOwnerId(1);
         p2.setId(2);
-        toReturn.add(p2);
+        input.add(p2);
 
-        when(dao.getAllPlanets(1)).thenReturn(toReturn);
+        when(dao.getAllPlanets(1)).thenReturn(input);
 
         List<Planet> actual = planetService.getAllPlanets(1);
-        Assertions.assertEquals(2, actual.size());
+
+        Assertions.assertEquals(input, actual);
     }
 
     @Test
@@ -77,7 +75,7 @@ public class PlanetServiceTest {
             "2,Planet3",
             "2,Planet4"
     })
-    public void getPlanetByIdSuccess(int ownerId, String planetName) {
+    public void getPlanetByNameSuccess(int ownerId, String planetName) {
         Planet toReturn = new Planet();
         toReturn.setOwnerId(ownerId);
         toReturn.setName(planetName);
@@ -91,7 +89,7 @@ public class PlanetServiceTest {
     @Test
     @DisplayName("PlanetService::getPlanetByName - Failure")
     @Order(3)
-    public void getPlanetByIdSuccess() {
+    public void getPlanetByNameFailure() {
         int ownerId = 1;
         String planetName = "PlanetDoesNotExist";
 
@@ -147,12 +145,12 @@ public class PlanetServiceTest {
 
         when(dao.createPlanet(toAdd)).thenReturn(toAdd);
         Planet actual = planetService.createPlanet(ownerId, toAdd);
-        boolean conditions = toAdd.getOwnerId() == actual.getOwnerId() && toAdd.getName().equals(toAdd.getName());
+        boolean conditions = toAdd.getOwnerId() == actual.getOwnerId() && toAdd.getName().equals(planetName);
         Assertions.assertTrue(conditions);
     }
 
     @Test
-    @DisplayName("PlanetService::createPlanet - Empty Name")
+    @DisplayName("PlanetService::createPlanet - Failure - Empty Name")
     @Order(7)
     public void createPlanetEmptyName() {
         Planet toAdd = new Planet();
@@ -168,7 +166,7 @@ public class PlanetServiceTest {
     }
 
     @Test
-    @DisplayName("PlanetService::createPlanet - Long Name")
+    @DisplayName("PlanetService::createPlanet - Failure - Long Name")
     @Order(8)
     public void createPlanetLongName() {
         Planet toAdd = new Planet();
