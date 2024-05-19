@@ -160,7 +160,7 @@ public class UserServiceTest {
     @Order(5)
     @CsvSource({
             "moreThan30Characters00000000000,password",
-            "username moreThan30Characters00000000000",
+            "username,moreThan30Characters00000000000",
             "moreThan30Characters00000000000,moreThan30Characters00000000000"
     })
     public void registerMaxLength(String username, String password) {
