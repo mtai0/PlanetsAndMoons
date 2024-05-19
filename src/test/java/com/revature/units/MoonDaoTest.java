@@ -38,7 +38,7 @@ public class MoonDaoTest {
     @BeforeEach
     public void setup() {
         connection = Mockito.mock(Connection.class);
-        connectionUtils.when(() -> ConnectionUtil.createConnection()).thenReturn(connection);
+        connectionUtils.when(ConnectionUtil::createConnection).thenReturn(connection);
         dao = new MoonDao();
     }
 

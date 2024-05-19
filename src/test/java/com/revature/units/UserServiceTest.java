@@ -33,10 +33,11 @@ public class UserServiceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("UserService::authenticate - Valid Input")
+    @DisplayName("UserService::authenticate - Success")
     @Order(0)
     @CsvSource({
-            "username,password"
+            "username,password",
+            "test,12345"
     })
     public void authenticateValid(String username, String password) {
         UsernamePasswordAuthentication loginRequestData = new UsernamePasswordAuthentication();
@@ -56,12 +57,12 @@ public class UserServiceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("UserService::authenticate - Invalid Username")
+    @DisplayName("UserService::authenticate - Failure -Username Not Found")
     @Order(1)
     @CsvSource({
-            "wrongUsername, password"
+            "wrongUsername,password"
     })
-    public void authenticateInvalidUsername(String username, String password) {
+    public void authenticateUsernameNotFound(String username, String password) {
         UsernamePasswordAuthentication loginRequestData = new UsernamePasswordAuthentication();
         loginRequestData.setUsername(username);
         loginRequestData.setPassword(password);
@@ -73,12 +74,12 @@ public class UserServiceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("UserService::authenticate - Invalid Password")
+    @DisplayName("UserService::authenticate - Failure - Wrong Password")
     @Order(2)
     @CsvSource({
-            "username, password"
+            "username,wrongPassword"
     })
-    public void authenticateInvalidPassword(String username, String password) {
+    public void authenticateWrongPassword(String username, String password) {
         //Create an intentionally wrong password
         String wrongPassword = password;
         if (wrongPassword.length() + 1 <= 30) {
@@ -103,12 +104,13 @@ public class UserServiceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("UserService::register - Valid Input")
+    @DisplayName("UserService::register - Success")
     @Order(3)
     @CsvSource({
-            "newUser, password"
+            "newUser,password",
+            "test123,123456"
     })
-    public void registerValid(String username, String password) {
+    public void registerSuccess(String username, String password) {
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(password);
@@ -129,10 +131,10 @@ public class UserServiceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("UserService::register - Existing Username")
+    @DisplayName("UserService::register - Failure - Existing Username")
     @Order(4)
     @CsvSource({
-            "existingUser, password"
+            "existingUser,password"
     })
     public void registerExisting(String username, String password) {
         User newUser = new User();
@@ -154,12 +156,12 @@ public class UserServiceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("UserService::register - Exceed Length")
+    @DisplayName("UserService::register - Failure - Exceed Length")
     @Order(5)
     @CsvSource({
-            "moreThan30Characters00000000000, password",
-            "username, moreThan30Characters00000000000",
-            "moreThan30Characters00000000000, moreThan30Characters00000000000"
+            "moreThan30Characters00000000000,password",
+            "username moreThan30Characters00000000000",
+            "moreThan30Characters00000000000,moreThan30Characters00000000000"
     })
     public void registerMaxLength(String username, String password) {
         User newUser = new User();
@@ -171,7 +173,7 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("UserService::register - Empty Username")
+    @DisplayName("UserService::register - Failure - Empty Username")
     @Order(6)
     public void registerEmptyUsername() {
         User newUser = new User();
@@ -183,7 +185,7 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("UserService::register - Empty Password")
+    @DisplayName("UserService::register - Failure - Empty Password")
     @Order(7)
     public void registerEmptyPassword() {
         User newUser = new User();
@@ -195,7 +197,7 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("UserService::register - Empty")
+    @DisplayName("UserService::register - Failure - Empty")
     @Order(8)
     public void registerEmpty() {
         User newUser = new User();
