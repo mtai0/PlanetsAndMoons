@@ -51,7 +51,9 @@ public class UserDaoTest {
     @DisplayName("UserDao::getUserByUsername - Valid Input")
     @Order(0)
     @CsvSource({
-            "username"
+            "username",
+            "test",
+            "user2"
     })
     public void getUserByUsername(String username) {
         PreparedStatement ps = Mockito.mock(PreparedStatement.class);
@@ -72,13 +74,11 @@ public class UserDaoTest {
         Assertions.assertEquals(username, actual.getUsername());
     }
 
-    @ParameterizedTest
+    @Test
     @DisplayName("UserDao::getUserByUsername - User Not Found")
     @Order(1)
-    @CsvSource({
-            "fakeUser"
-    })
-    public void getUserByUsernameNotFound(String username) {
+    public void getUserByUsernameNotFound() {
+        String username = "UserDoesNotExist";
         PreparedStatement ps = Mockito.mock(PreparedStatement.class);
         try {
             when(connection.prepareStatement("select * from users where username = ?")).thenReturn(ps);
@@ -98,7 +98,9 @@ public class UserDaoTest {
     @DisplayName("UserDao::createUser")
     @Order(2)
     @CsvSource({
-            "username,password"
+            "username,password",
+            "test,testpassword",
+            "user3,12345"
     })
     public void createUser(String username, String password) {
         UsernamePasswordAuthentication auth = new UsernamePasswordAuthentication();

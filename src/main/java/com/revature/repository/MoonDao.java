@@ -168,7 +168,6 @@ public class MoonDao {
 			PreparedStatement ps = connection.prepareStatement(sql);
 			ps.setInt(1, ownerId);
 			ps.setInt(2, planetId);
-			ps.executeQuery();
 			ResultSet rs = ps.executeQuery();
 			while (rs.next())
 			{

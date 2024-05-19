@@ -477,4 +477,75 @@ public class MoonDaoTest {
             Assertions.fail("SQLException thrown.");
         }
     }
+
+    @ParameterizedTest
+    @DisplayName("MoonDao::getMoonsFromPlanet - Success")
+    @Order(13)
+    @CsvSource({
+            "1,1",
+            "1,2",
+            "2,3",
+            "2,4"
+    })
+    public void getMoonsFromPlanetSuccess(int ownerId, int planetId) {
+        PreparedStatement ps = Mockito.mock(PreparedStatement.class);
+        try {
+
+            when(connection.prepareStatement("SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? AND planets.id = ?")).thenReturn(ps);
+            doNothing().when(ps).setInt(1, ownerId);
+            doNothing().when(ps).setInt(2,planetId);
+            ResultSet results = Mockito.mock(ResultSet.class);
+            when(ps.executeQuery()).thenReturn(results);
+
+            //Fake resultset iteration. Unsafe.
+            var ref = new Object() {
+                int currentRow = 0;
+            };
+            when(results.getRow()).thenReturn(ref.currentRow);
+            doAnswer(invocation -> {
+                ref.currentRow = ref.currentRow + 1;
+                return ref.currentRow <= 1;
+            }).when(results).next();
+
+            when(results.getInt(1)).thenReturn(1);
+            when(results.getString("name")).thenReturn("Placeholder");
+            when(results.getInt("myPlanetId")).thenReturn(planetId);
+
+            List<Moon> moonList = dao.getMoonsFromPlanet(ownerId, planetId);
+            boolean correctSize = moonList.size() == 1;
+            boolean moonsMatch = false;
+            if (correctSize) {
+                Moon actual = moonList.get(0);
+                moonsMatch = actual.getMyPlanetId() == planetId;
+            }
+            Assertions.assertTrue(moonsMatch);
+        }
+        catch (SQLException e){
+            Assertions.fail("SQLException thrown.");
+        }
+    }
+
+    @Test
+    @DisplayName("MoonDao::getMoonsFromPlanet - Failure")
+    @Order(14)
+    public void getMoonsFromPlanetFailure() {
+        int ownerId = -1;
+        int planetId = 1;
+        PreparedStatement ps = Mockito.mock(PreparedStatement.class);
+        try {
+
+            when(connection.prepareStatement("SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? AND planets.id = ?")).thenReturn(ps);
+            doNothing().when(ps).setInt(1, ownerId);
+            doNothing().when(ps).setInt(2,planetId);
+            ResultSet results = Mockito.mock(ResultSet.class);
+            when(ps.executeQuery()).thenReturn(results);
+            when(results.next()).thenReturn(false);
+
+            List<Moon> moonList = dao.getMoonsFromPlanet(ownerId, planetId);
+            Assertions.assertEquals(0, moonList.size());
+        }
+        catch (SQLException e){
+            Assertions.fail("SQLException thrown.");
+        }
+    }
 }
