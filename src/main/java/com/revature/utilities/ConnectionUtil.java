@@ -14,6 +14,11 @@ public class ConnectionUtil {
     public static Connection createConnection() throws SQLException{
         InputStream props= MainDriver.class.getClassLoader().getResourceAsStream("database.properties");
         Properties properties=new Properties();
+        try {
+            properties.load(props);
+        } catch (IOException e) {
+            System.out.println("ConnectionUtil::createConnection - Failed to load properties.");
+        }
         try{
             properties.load(props);
         } catch (IOException e) {

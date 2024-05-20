@@ -1,3 +1,5 @@
+package com.revature;
+
 import com.revature.utilities.RequestMapper;
 import io.javalin.Javalin;
 
