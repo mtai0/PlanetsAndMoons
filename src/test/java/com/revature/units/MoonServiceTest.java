@@ -132,14 +132,15 @@ public class MoonServiceTest {
     @DisplayName("MoonService::createMoon - Success")
     @Order(6)
     @CsvSource({
-            "1,Moon1",
-            "1,Moon2",
-            "2,Moon3",
-            "2,Moon4"
+            "1,1,Moon1",
+            "1,1,Moon2",
+            "2,2,Moon3",
+            "2,2,Moon4"
     })
-    public void createMoonSuccess(int ownerId, String moonName) {
+    public void createMoonSuccess(int ownerId, int myPlanetId, String moonName) {
         Moon toAdd = new Moon();
         toAdd.setName(moonName);
+        toAdd.setId(myPlanetId);
 
         when(dao.createMoon(ownerId, toAdd)).thenReturn(toAdd);
         Moon actual = moonService.createMoon(ownerId, toAdd);
@@ -152,9 +153,11 @@ public class MoonServiceTest {
     @Order(7)
     public void createMoonEmptyName() {
         int ownerId = 1;
+        int myPlanetId = 1;
         String moonName = "";
         Moon toAdd = new Moon();
         toAdd.setName(moonName);
+        toAdd.setMyPlanetId(1);
 
         Moon actual = moonService.createMoon(ownerId, toAdd);
         Moon expected = new Moon();
@@ -169,9 +172,11 @@ public class MoonServiceTest {
     @Order(8)
     public void createMoonLongName() {
         int ownerId = 1;
+        int myPlanetId = 1;
         String moonName = "ThisIsMoreThan30Charactersaaaaa";
         Moon toAdd = new Moon();
         toAdd.setName(moonName);
+        toAdd.setMyPlanetId(1);
 
         Moon actual = moonService.createMoon(ownerId, toAdd);
         Moon expected = new Moon();
@@ -186,9 +191,11 @@ public class MoonServiceTest {
     @Order(9)
     public void createMoonSuccess() {
         int ownerId = 1;
+        int myPlanetId = 1;
         String moonName = "ThisFailsForSomeReason";
         Moon toAdd = new Moon();
         toAdd.setName(moonName);
+        toAdd.setMyPlanetId(myPlanetId);
 
         when(dao.createMoon(ownerId, toAdd)).thenReturn(new Moon());
         Moon actual = moonService.createMoon(ownerId, toAdd);
