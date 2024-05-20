@@ -84,4 +84,34 @@ public class UserDaoTest {
             Assertions.fail("createUser returned null");
         }
     }
+
+    @ParameterizedTest
+    @DisplayName("Integration::UserDao::getUserByUsername - Success")
+    @Order(0)
+    @CsvSource({
+            "username",
+            "123",
+            "user3"
+    })
+    public void getUserByUsernameSuccess(String username) {
+        //Populate database
+        try (Connection connection = ConnectionUtil.createConnection()) {
+            PreparedStatement ps = connection.prepareStatement("insert into users (username, password) values (?, ?)");
+            ps.setString(1, username);
+            ps.setString(2, "placeholderPassword");
+            ps.executeUpdate();
+        } catch(SQLException e) {
+            Assertions.fail("getUserByUSername failed to populate database due to a SQLException.");
+        }
+
+        User actual = dao.getUserByUsername(username);
+        if (actual != null){
+            //Verify username and password matches.
+            boolean match = username.equals(actual.getUsername()) && "placeholderPassword".equals(actual.getPassword());
+            Assertions.assertTrue(match);
+        }
+        else {
+            Assertions.fail("getUserByUsername returned null");
+        }
+    }
 }
