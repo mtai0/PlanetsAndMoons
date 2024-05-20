@@ -61,7 +61,7 @@ public class UserDaoTest {
     }
 
     @ParameterizedTest
-    @DisplayName("Integration::UserDao::createUser - Success")
+    @DisplayName("Integration::UserDao-Database::createUser - Success")
     @Order(0)
     @CsvSource({
             "username,password",
@@ -86,7 +86,7 @@ public class UserDaoTest {
     }
 
     @ParameterizedTest
-    @DisplayName("Integration::UserDao::getUserByUsername - Success")
+    @DisplayName("Integration::UserDao-Database::getUserByUsername - Success")
     @Order(1)
     @CsvSource({
             "username",
@@ -116,7 +116,7 @@ public class UserDaoTest {
     }
 
     @Test
-    @DisplayName("Integration::UserDao::getUserByUsername - Failure")
+    @DisplayName("Integration::UserDao-Database::getUserByUsername - Failure")
     @Order(2)
     public void getUserByUsernameSuccess() {
         User actual = dao.getUserByUsername("username");
