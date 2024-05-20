@@ -26,7 +26,7 @@ public class ConnectionUtil {
         }
         boolean useTest = Boolean.parseBoolean(properties.getProperty("test-mode"));
         if (useTest) {
-            return DriverManager.getConnection("jdbc:sqlite:src/main/resources/planetariumForTest.db");
+            return DriverManager.getConnection("jdbc:sqlite:src/test/resources/planetariumForTest.db");
         }
         else {
             return DriverManager.getConnection("jdbc:sqlite:src/main/resources/planetarium.db");
