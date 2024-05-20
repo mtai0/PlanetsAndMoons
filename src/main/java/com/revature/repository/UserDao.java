@@ -36,7 +36,7 @@ public class UserDao {
            ps.setString(2, registerRequest.getPassword());
            ps.executeUpdate();
            ResultSet rs = ps.getGeneratedKeys();
-           if(rs.first()){
+           if(rs.next()){
                User createdUser = new User();
                createdUser.setId(rs.getInt(1));
                createdUser.setUsername(registerRequest.getUsername());

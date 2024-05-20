@@ -126,7 +126,7 @@ public class UserDaoTest {
 
             when(ps.getGeneratedKeys()).thenReturn(results);
 
-            when(results.first()).thenReturn(true);
+            when(results.next()).thenReturn(true);
             when(results.getInt(1)).thenReturn(0);
 
             User actual = dao.createUser(auth);

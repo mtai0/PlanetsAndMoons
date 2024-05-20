@@ -1,52 +1,87 @@
 package com.revature.integration;
 
 import com.revature.MainDriverTest;
+import com.revature.models.User;
+import com.revature.models.UsernamePasswordAuthentication;
 import com.revature.repository.UserDao;
 import com.revature.utilities.ConnectionUtil;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserDaoTest {
-    private Connection connection;
     private UserDao dao;
 
-    @BeforeEach
-    public void setupTest(){
-        dao = new UserDao();
+    //Will be used for test cases that need the user ID
+    private int getUserId(Connection connection, String name) {
+        int id = -1;
         try {
-            connection = ConnectionUtil.createConnection();
-            PreparedStatement ps = connection.prepareStatement("DELETE FROM users");
+            PreparedStatement ps = connection.prepareStatement("SELECT id FROM users WHERE username = ?;");
+            ps.setString(1, name);
+
+            ResultSet results = ps.executeQuery();
+            if (results.next()){
+                id = results.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("getUserId: Failed to get user ID.");
+        }
+        return id;
+    }
+
+    private void resetUserDatabase(){
+        try (Connection connection = ConnectionUtil.createConnection()) {
+            PreparedStatement ps = connection.prepareStatement("DELETE FROM users;");
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    @AfterEach
-    public void cleanupTest(){
-        if (connection != null) {
-            try {
-                connection = ConnectionUtil.createConnection();
-                PreparedStatement ps = connection.prepareStatement("DELETE FROM users");
-                ps.executeUpdate();
-                connection.close();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        dao = null;
+    @BeforeEach
+    public void setupTest(){
+        dao = new UserDao();
+        resetUserDatabase();
     }
 
-    @Test
-    public void createUserSuccess(){
-        
+    @AfterEach
+    public void cleanupTest(){
+        dao = null;
+        resetUserDatabase();
+    }
+
+    @ParameterizedTest
+    @DisplayName("Integration::UserDao::createUser - Success")
+    @Order(0)
+    @CsvSource({
+            "username,password",
+            "test,testpassword",
+            "user3,12345"
+    })
+    public void createUserSuccess(String username, String password){
+        UsernamePasswordAuthentication auth = new UsernamePasswordAuthentication();
+        auth.setUsername(username);
+        auth.setPassword(password);
+
+        User actual = dao.createUser(auth);
+
+        if (actual != null){
+            //Verify username and password matches.
+            boolean match = username.equals(actual.getUsername()) && password.equals(actual.getPassword());
+            Assertions.assertTrue(match);
+        }
+        else {
+            Assertions.fail("createUser returned null");
+        }
     }
 }
