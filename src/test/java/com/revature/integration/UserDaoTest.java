@@ -87,7 +87,7 @@ public class UserDaoTest {
 
     @ParameterizedTest
     @DisplayName("Integration::UserDao::getUserByUsername - Success")
-    @Order(0)
+    @Order(1)
     @CsvSource({
             "username",
             "123",
@@ -113,5 +113,13 @@ public class UserDaoTest {
         else {
             Assertions.fail("getUserByUsername returned null");
         }
+    }
+
+    @Test
+    @DisplayName("Integration::UserDao::getUserByUsername - Failure")
+    @Order(2)
+    public void getUserByUsernameSuccess() {
+        User actual = dao.getUserByUsername("username");
+        Assertions.assertNull(actual);
     }
 }
