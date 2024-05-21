@@ -1,4 +1,4 @@
-package com.revature.integration;
+package com.revature.integration.databasedao;
 
 import com.revature.models.User;
 import com.revature.models.UsernamePasswordAuthentication;

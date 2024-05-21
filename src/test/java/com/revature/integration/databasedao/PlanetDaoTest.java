@@ -1,4 +1,4 @@
-package com.revature.integration;
+package com.revature.integration.databasedao;
 
 import com.revature.repository.PlanetDao;
 import com.revature.utilities.ConnectionUtil;
