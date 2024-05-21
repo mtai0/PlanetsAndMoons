@@ -4,11 +4,14 @@ import com.revature.repository.MoonDao;
 import com.revature.utilities.ConnectionUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class MoonDaoTest {
     private MoonDao dao;
 
