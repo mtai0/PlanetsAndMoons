@@ -71,8 +71,8 @@ public class UserDaoTest {
             when(results.getInt("id")).thenReturn(0);
             when(results.getString("username")).thenReturn(username);
             when(results.getString("password")).thenReturn("fillerPassword");
-        } catch (SQLException e){
-            Assertions.fail("SQLException thrown.");
+        } catch(SQLException e) {
+            Assertions.fail("UserDao::getUserByUsername failed due to a SQLException.");
         }
 
         User actual = dao.getUserByUsername(username);
@@ -91,8 +91,8 @@ public class UserDaoTest {
             ResultSet results = Mockito.mock(ResultSet.class);
             when(ps.executeQuery()).thenReturn(results);
             when(results.next()).thenReturn(false);
-        } catch (SQLException e){
-            Assertions.fail("SQLException thrown.");
+        } catch(SQLException e) {
+            Assertions.fail("UserDao::getUserByUsername failed due to a SQLException.");
         }
 
         User actual = dao.getUserByUsername(username);
@@ -132,7 +132,9 @@ public class UserDaoTest {
             User actual = dao.createUser(auth);
             boolean credentialsMatch = actual.getUsername().equals(username) && actual.getPassword().equals(password);
             Assertions.assertTrue(credentialsMatch);
-        } catch (SQLException ignored) {}
+        } catch(SQLException e) {
+            Assertions.fail("UserDao::createUser failed due to a SQLException.");
+        }
     }
 
     @Test
@@ -165,6 +167,8 @@ public class UserDaoTest {
             User actual = dao.createUser(auth);
             boolean condition = actual.getUsername() == null && actual.getPassword() == null && actual.getId() == expected.getId();
             Assertions.assertTrue(condition);
-        } catch (SQLException ignored) {}
+        } catch(SQLException e) {
+            Assertions.fail("UserDao::createUser failed due to a SQLException.");
+        }
     }
 }

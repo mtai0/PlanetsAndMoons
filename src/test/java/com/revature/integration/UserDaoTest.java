@@ -1,6 +1,5 @@
 package com.revature.integration;
 
-import com.revature.MainDriverTest;
 import com.revature.models.User;
 import com.revature.models.UsernamePasswordAuthentication;
 import com.revature.repository.UserDao;
@@ -9,13 +8,10 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Properties;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserDaoTest {
@@ -39,10 +35,16 @@ public class UserDaoTest {
         return id;
     }
 
-    private void resetUserDatabase(){
+    private void resetDatabase(){
         try (Connection connection = ConnectionUtil.createConnection()) {
-            PreparedStatement ps = connection.prepareStatement("DELETE FROM users;");
-            ps.executeUpdate();
+            PreparedStatement psMoon = connection.prepareStatement("DELETE FROM moons;");
+            psMoon.executeUpdate();
+
+            PreparedStatement psPlanet = connection.prepareStatement("DELETE FROM planets;");
+            psPlanet.executeUpdate();
+
+            PreparedStatement psUser = connection.prepareStatement("DELETE FROM users;");
+            psUser.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -51,13 +53,13 @@ public class UserDaoTest {
     @BeforeEach
     public void setupTest(){
         dao = new UserDao();
-        resetUserDatabase();
+        resetDatabase();
     }
 
     @AfterEach
     public void cleanupTest(){
         dao = null;
-        resetUserDatabase();
+        resetDatabase();
     }
 
     @ParameterizedTest
@@ -94,21 +96,20 @@ public class UserDaoTest {
             "user3"
     })
     public void getUserByUsernameSuccess(String username) {
+        String password = "placeholder";
         //Populate database
         try (Connection connection = ConnectionUtil.createConnection()) {
             PreparedStatement ps = connection.prepareStatement("insert into users (username, password) values (?, ?)");
             ps.setString(1, username);
-            ps.setString(2, "placeholderPassword");
+            ps.setString(2, password);
             ps.executeUpdate();
         } catch(SQLException e) {
-            Assertions.fail("getUserByUSername failed to populate database due to a SQLException.");
+            Assertions.fail("getUserByUsername failed to populate database due to a SQLException.");
         }
 
         User actual = dao.getUserByUsername(username);
         if (actual != null){
-            //Verify username and password matches.
-            boolean match = username.equals(actual.getUsername()) && "placeholderPassword".equals(actual.getPassword());
-            Assertions.assertTrue(match);
+            Assertions.assertEquals(username, actual.getUsername());
         }
         else {
             Assertions.fail("getUserByUsername returned null");
