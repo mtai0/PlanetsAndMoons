@@ -1,5 +1,6 @@
 package com.revature.integration.databasedao;
 
+import com.revature.models.Moon;
 import com.revature.models.Planet;
 import com.revature.models.User;
 import com.revature.models.UsernamePasswordAuthentication;
@@ -229,9 +230,11 @@ public class PlanetDaoTest {
         int ownerID =-1 ;
         int planetID =-1;
         int userId=-1;
+        int myPlanetId=-1;
         String username = "user";
         String password = "pass";
         String planetname="venus";
+        String moonName = "venusMoon";
         try (Connection connection = ConnectionUtil.createConnection()) {
             //Add user to DB
             String sql2 = "insert into users (username, password) values (?, ?)";
@@ -254,15 +257,28 @@ public class PlanetDaoTest {
             planetID = rsPlanet.getInt(1);
 
 
+            //add moons to DB
+
+            String sql3 = "insert into moons (name, myPlanetId) values (?, ?)";
+            PreparedStatement ps3 = connection.prepareStatement(sql3, Statement.RETURN_GENERATED_KEYS);
+            ps3.setString(1, moonName);
+            ps3.setInt(2, myPlanetId);
+            int MoonRowsUpdated = ps3.executeUpdate();
+            if (MoonRowsUpdated <= 0) Assertions.fail("Failed to set up Moon");
+            ResultSet rsMoon = ps3.getGeneratedKeys();
+            myPlanetId = rsMoon.getInt(1);
+
+
+
         } catch(SQLException e) {
             Assertions.fail("deletePlanetsbyID failed to delete from database due to a SQLException.");
         }
 
-        Planet actual = dao.getPlanetById(ownerID,planetID);
-        if (actual != null){
-            Assertions.assertFalse(actual.getId()==-1, "UserID correct");
-            Assertions.assertFalse(actual.getId()!=-1, "PlanetID correct");
-            Assertions.assertFalse(userId==-1 && actual.getId()==-1);
+        boolean actual = dao.deletePlanetById(ownerID,planetID);
+        if (actual){
+            Assertions.assertFalse(planetID==-1, "UserID correct");
+            Assertions.assertFalse(userId==-1 && planetID==-1);
+            Assertions.assertFalse(userId==-1, "PlanetID correct");
         }
         else {
             Assertions.fail("deletePlanetbyID returned null");
