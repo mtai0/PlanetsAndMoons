@@ -57,14 +57,12 @@ public class PlanetDaoTest {
 
         Planet actual = dao.createPlanet(planet);
 
-        if (actual != null){
-            //Verify planetname matches.
-            boolean match = planet.equals(actual.getName());
-            Assertions.assertEquals(planet.getName(), actual.getName());
-        }
-        else {
-            Assertions.fail("createPlanet returned null");
-        }
+
+        //Verify planetname matches.
+        boolean match = planet.getName().equals(actual.getName());
+        Assertions.assertEquals(planet.getName(), actual.getName());
+
+
     }
 
 
@@ -78,8 +76,8 @@ public class PlanetDaoTest {
             "earth"
     })
     public void getUserByUsernameSuccess(String planetname) {
-        int ownerID =1 ;
-        int userId=-1;
+
+        int userId= -1;
         String username = "user";
         String password = "pass";
         //Populate database
@@ -99,19 +97,14 @@ public class PlanetDaoTest {
             String sql = "insert into planets (name, ownerId) values (?, ?)";
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, planetname);
-            ps.setInt(2, ownerID);
+            ps.setInt(2, userId);
             ps.executeUpdate();
         } catch(SQLException e) {
             Assertions.fail("getPlanetbyPlanetname failed to populate database due to a SQLException.");
         }
 
-        Planet actual = dao.getPlanetByName(ownerID,planetname);
-        if (actual != null){
-            Assertions.assertEquals(planetname, actual.getName());
-        }
-        else {
-            Assertions.fail("getPlanetbyPlanetName returned null");
-        }
+        Planet actual = dao.getPlanetByName(userId,planetname);
+        Assertions.assertNotNull(actual);
     }
 
     @ParameterizedTest
@@ -123,7 +116,7 @@ public class PlanetDaoTest {
             "earth"
     })
     public void getPlanetById(String planetname) {
-        int ownerID =-1 ;
+
         int planetID =-1;
         int userId=-1;
         String username = "user";
@@ -144,7 +137,7 @@ public class PlanetDaoTest {
             String sql = "insert into planets (name, ownerId) values (?, ?)";
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, planetname);
-            ps.setInt(2, ownerID);
+            ps.setInt(2, userId);
             int planetRowsUpdated = ps.executeUpdate();
             if (planetRowsUpdated <= 0) Assertions.fail("Failed to set up Planet");
             ResultSet rsPlanet = ps.getGeneratedKeys();
@@ -153,13 +146,11 @@ public class PlanetDaoTest {
             Assertions.fail("getPlanetbyPlanetID failed to populate database due to a SQLException.");
         }
 
-        Planet actual = dao.getPlanetById(ownerID,planetID);
-        if (actual != null){
-            Assertions.assertEquals(planetID, actual.getId());
-        }
-        else {
-            Assertions.fail("getPlanetbyPlanetID returned null");
-        }
+        Planet actual = dao.getPlanetById(userId,planetID);
+
+        Assertions.assertEquals(planetID, actual.getId());
+
+
     }
 
 
@@ -167,7 +158,7 @@ public class PlanetDaoTest {
     @DisplayName("Integration::PlanetDAO-Database::getAllPlanets - Success")
     @Order(3)
     public void getAllPlanets() {
-        int ownerID =-1 ;
+
         int planetID =-1;
         int userId=-1;
         ArrayList<Planet> planetList = new ArrayList<Planet>();
@@ -189,7 +180,7 @@ public class PlanetDaoTest {
             String sql = "insert into planets (name, ownerId) values (?, ?)";
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, planetname);
-            ps.setInt(2, ownerID);
+            ps.setInt(2, userId);
             int planetRowsUpdated = ps.executeUpdate();
             if (planetRowsUpdated <= 0) Assertions.fail("Failed to set up Planet");
             ResultSet rsPlanet = ps.getGeneratedKeys();
@@ -198,7 +189,7 @@ public class PlanetDaoTest {
             //get planets added into database
             String sql3 = "select * from planets where ownerId = ?";
             PreparedStatement ps3 = connection.prepareStatement(sql3);
-            ps3.setInt(1, ownerID);
+            ps3.setInt(1, userId);
             ResultSet rs = ps3.executeQuery();
             while (rs.next()) {
                 Planet newPlanet = new Planet();
@@ -212,13 +203,10 @@ public class PlanetDaoTest {
             Assertions.fail("getAllPlanets failed to populate database due to a SQLException.");
         }
 
-        List<Planet> actual = dao.getAllPlanets(ownerID);
-        if (actual != null){
-            Assertions.assertEquals(planetList.size(), actual.size());
-        }
-        else {
-            Assertions.fail("getAllPlanets returned null");
-        }
+        List<Planet> actual = dao.getAllPlanets(userId);
+        Assertions.assertEquals(planetList.size(), actual.size());
+
+
     }
 
 
@@ -226,8 +214,7 @@ public class PlanetDaoTest {
     @Test
     @DisplayName("Integration::PlanetDAO-Database::deletePlanetbyPlanetID - Success")
     @Order(4)
-    public void deletePLanetByID() {
-        int ownerID =-1 ;
+    public void deletePLanetByID() {;
         int planetID =-1;
         int userId=-1;
         int myPlanetId=-1;
@@ -250,7 +237,7 @@ public class PlanetDaoTest {
             String sql = "insert into planets (name, ownerId) values (?, ?)";
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, planetname);
-            ps.setInt(2, ownerID);
+            ps.setInt(2, userId);
             int planetRowsUpdated = ps.executeUpdate();
             if (planetRowsUpdated <= 0) Assertions.fail("Failed to set up Planet");
             ResultSet rsPlanet = ps.getGeneratedKeys();
@@ -274,7 +261,7 @@ public class PlanetDaoTest {
             Assertions.fail(" Failed to populate the database due to a SQLException.");
         }
 
-        boolean actual = dao.deletePlanetById(ownerID,planetID);
+        boolean actual = dao.deletePlanetById(userId,planetID);
         //Assertions.assertTrue(actual);
 
         if(actual){
