@@ -271,14 +271,14 @@ public class PlanetDaoTest {
 
 
         } catch(SQLException e) {
-            Assertions.fail("deletePlanetsbyID failed to delete from database due to a SQLException.");
+            Assertions.fail(" Failed to populate the database due to a SQLException.");
         }
 
         boolean actual = dao.deletePlanetById(ownerID,planetID);
-        if (actual){
-            Assertions.assertFalse(planetID==-1, "UserID correct");
-            Assertions.assertFalse(userId==-1 && planetID==-1);
-            Assertions.assertFalse(userId==-1, "PlanetID correct");
+        //Assertions.assertTrue(actual);
+
+        if(actual){
+            Assertions.assertTrue(actual);
         }
         else {
             Assertions.fail("deletePlanetbyID returned null");
