@@ -75,7 +75,7 @@ public class PlanetDaoTest {
             "mars",
             "earth"
     })
-    public void getUserByUsernameSuccess(String planetname) {
+    public void getPlanetByPlanetNameSuccess(String planetname) {
 
         int userId= -1;
         String username = "user";
