@@ -12,30 +12,35 @@ import java.util.Properties;
 <span class="nc" id="L12">public class ConnectionUtil {</span>
     
     public static Connection createConnection() throws SQLException{
-<span class="nc" id="L15">        InputStream props= MainDriver.class.getClassLoader().getResourceAsStream(&quot;database.properties&quot;);</span>
-<span class="nc" id="L16">        Properties properties=new Properties();</span>
-        try{
-<span class="nc" id="L18">            properties.load(props);</span>
+<span class="fc" id="L15">        InputStream props= MainDriver.class.getClassLoader().getResourceAsStream(&quot;database.properties&quot;);</span>
+<span class="fc" id="L16">        Properties properties=new Properties();</span>
+        try {
+<span class="fc" id="L18">            properties.load(props);</span>
 <span class="nc" id="L19">        } catch (IOException e) {</span>
-<span class="nc" id="L20">            throw new RuntimeException(e);</span>
-<span class="nc" id="L21">        }</span>
-<span class="nc" id="L22">        boolean useTest = Boolean.parseBoolean(properties.getProperty(&quot;test-mode&quot;));</span>
-<span class="nc bnc" id="L23" title="All 2 branches missed.">        if (useTest) {</span>
-<span class="nc" id="L24">            return DriverManager.getConnection(&quot;jdbc:sqlite:src/main/resources/planetariumForTest.db&quot;);</span>
+<span class="nc" id="L20">            System.out.println(&quot;ConnectionUtil::createConnection - Failed to load properties.&quot;);</span>
+<span class="fc" id="L21">        }</span>
+        try{
+<span class="fc" id="L23">            properties.load(props);</span>
+<span class="nc" id="L24">        } catch (IOException e) {</span>
+<span class="nc" id="L25">            throw new RuntimeException(e);</span>
+<span class="fc" id="L26">        }</span>
+<span class="fc" id="L27">        boolean useTest = Boolean.parseBoolean(properties.getProperty(&quot;test-mode&quot;));</span>
+<span class="pc bpc" id="L28" title="1 of 2 branches missed.">        if (useTest) {</span>
+<span class="fc" id="L29">            return DriverManager.getConnection(&quot;jdbc:sqlite:src/test/resources/planetariumForTest.db&quot;);</span>
         }
         else {
-<span class="nc" id="L27">            return DriverManager.getConnection(&quot;jdbc:sqlite:src/main/resources/planetarium.db&quot;);</span>
+<span class="nc" id="L32">            return DriverManager.getConnection(&quot;jdbc:sqlite:src/main/resources/planetarium.db&quot;);</span>
         }
     }
 
     public static void main(String[] args) {
         // run this to create database
         try {
-<span class="nc" id="L34">            ConnectionUtil.createConnection();</span>
-<span class="nc" id="L35">        } catch (SQLException e) {</span>
-<span class="nc" id="L36">            e.printStackTrace();</span>
-<span class="nc" id="L37">        }</span>
-<span class="nc" id="L38">    }</span>
+<span class="nc" id="L39">            ConnectionUtil.createConnection();</span>
+<span class="nc" id="L40">        } catch (SQLException e) {</span>
+<span class="nc" id="L41">            e.printStackTrace();</span>
+<span class="nc" id="L42">        }</span>
+<span class="nc" id="L43">    }</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

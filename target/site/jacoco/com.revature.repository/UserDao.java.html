@@ -36,7 +36,7 @@ import java.sql.*;
 <span class="fc" id="L36">           ps.setString(2, registerRequest.getPassword());</span>
 <span class="fc" id="L37">           ps.executeUpdate();</span>
 <span class="fc" id="L38">           ResultSet rs = ps.getGeneratedKeys();</span>
-<span class="fc bfc" id="L39" title="All 2 branches covered.">           if(rs.first()){</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">           if(rs.next()){</span>
 <span class="fc" id="L40">               User createdUser = new User();</span>
 <span class="fc" id="L41">               createdUser.setId(rs.getInt(1));</span>
 <span class="fc" id="L42">               createdUser.setUsername(registerRequest.getUsername());</span>
@@ -48,6 +48,5 @@ import java.sql.*;
 <span class="fc" id="L48">       }</span>
 <span class="fc" id="L49">       return new User();</span>
    }
-
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
