@@ -122,23 +122,40 @@ import com.revature.utilities.ConnectionUtil;
 
 	public boolean deletePlanetById(int ownerId, int planetId) {
 <span class="fc" id="L124">		try(Connection connection = ConnectionUtil.createConnection()) {</span>
-<span class="fc" id="L125">			String sql = &quot;delete from planets where ownerId = ? and id = ?&quot;;</span>
-<span class="fc" id="L126">			PreparedStatement ps = connection.prepareStatement(sql);</span>
-<span class="fc" id="L127">			ps.setInt(1, ownerId);</span>
-<span class="fc" id="L128">			ps.setInt(2, planetId);</span>
-<span class="fc" id="L129">			int rowsAffected = ps.executeUpdate();</span>
-<span class="fc bfc" id="L130" title="All 2 branches covered.">			if (rowsAffected &gt; 0) {</span>
-				//Need to manually delete moons since ON DELETE CASCADE isn't working.
-<span class="fc" id="L132">				String moonSql = &quot;delete from moons where myPlanetId = ?&quot;;</span>
-<span class="fc" id="L133">				PreparedStatement deleteMoons = connection.prepareStatement(moonSql);</span>
-<span class="fc" id="L134">				deleteMoons.setInt(1, planetId);</span>
-<span class="fc" id="L135">				deleteMoons.executeUpdate();</span>
-<span class="fc" id="L136">				return true;</span>
+
+			//Check if User owns planet
+			{
+<span class="fc" id="L128">				String sql = &quot;select * from planets where id = ? and ownerId = ?&quot;;</span>
+<span class="fc" id="L129">				PreparedStatement ps = connection.prepareStatement(sql);</span>
+<span class="fc" id="L130">				ps.setInt(1, planetId);</span>
+<span class="fc" id="L131">				ps.setInt(2, ownerId);</span>
+<span class="fc" id="L132">				ResultSet rs = ps.executeQuery();</span>
+<span class="fc bfc" id="L133" title="All 2 branches covered.">				if(!rs.next()) {</span>
+<span class="fc" id="L134">					return false;</span>
+				}
 			}
-<span class="pc bpc" id="L138" title="1 of 2 branches missed.">		}catch (SQLException e){</span>
-<span class="nc" id="L139">			System.out.println(e);</span>
-<span class="fc" id="L140">		}</span>
-<span class="fc" id="L141">		return false;</span>
+
+			//Delete planet's moons. This should be handled by ON DELETE CASCADE instead.
+			{
+<span class="fc" id="L140">				String moonSql = &quot;delete from moons where myPlanetId = ?&quot;;</span>
+<span class="fc" id="L141">				PreparedStatement deleteMoons = connection.prepareStatement(moonSql);</span>
+<span class="fc" id="L142">				deleteMoons.setInt(1, planetId);</span>
+<span class="fc" id="L143">				deleteMoons.executeUpdate();</span>
+			}
+
+			//Delete planets.
+			{
+<span class="fc" id="L148">				String sql = &quot;delete from planets where ownerId = ? and id = ?&quot;;</span>
+<span class="fc" id="L149">				PreparedStatement ps = connection.prepareStatement(sql);</span>
+<span class="fc" id="L150">				ps.setInt(1, ownerId);</span>
+<span class="fc" id="L151">				ps.setInt(2, planetId);</span>
+<span class="fc" id="L152">				int rowsAffected = ps.executeUpdate();</span>
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">				if (rowsAffected &gt; 0) return true;</span>
+			}
+<span class="pc bpc" id="L155" title="2 of 4 branches missed.">		}catch (SQLException e){</span>
+<span class="nc" id="L156">			System.out.println(e);</span>
+<span class="nc" id="L157">		}</span>
+<span class="nc" id="L158">		return false;</span>
 	}
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

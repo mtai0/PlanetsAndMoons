@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.revature.units.MoonDaoTest" time="1.825" tests="30" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report-3.0.xsd" version="3.0" name="com.revature.integration.databasedao.PlanetDaoTest" time="1.04" tests="11" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -58,43 +58,15 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="getAllMoonsSuccess" classname="com.revature.units.MoonDaoTest" time="0.728">
-    <system-err><![CDATA[WARNING: A Java agent has been loaded dynamically (C:\Users\Lenovo\.m2\repository\net\bytebuddy\byte-buddy-agent\1.14.12\byte-buddy-agent-1.14.12.jar)
-WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
-WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
-WARNING: Dynamic loading of agents will be disallowed by default in a future release
-]]></system-err>
-  </testcase>
-  <testcase name="getAllMoonsFailure" classname="com.revature.units.MoonDaoTest" time="0.0"/>
-  <testcase name="getMoonByNameSuccess(int, String)[1]" classname="com.revature.units.MoonDaoTest" time="0.077"/>
-  <testcase name="getMoonByNameSuccess(int, String)[2]" classname="com.revature.units.MoonDaoTest" time="0.004"/>
-  <testcase name="getMoonByNameSuccess(int, String)[3]" classname="com.revature.units.MoonDaoTest" time="0.003"/>
-  <testcase name="getMoonByNameSuccess(int, String)[4]" classname="com.revature.units.MoonDaoTest" time="0.0"/>
-  <testcase name="getMoonByNameFailure" classname="com.revature.units.MoonDaoTest" time="0.003"/>
-  <testcase name="getMoonByIdSuccess(int, int)[1]" classname="com.revature.units.MoonDaoTest" time="0.005"/>
-  <testcase name="getMoonByIdSuccess(int, int)[2]" classname="com.revature.units.MoonDaoTest" time="0.009"/>
-  <testcase name="getMoonByIdSuccess(int, int)[3]" classname="com.revature.units.MoonDaoTest" time="0.0"/>
-  <testcase name="getMoonByIdSuccess(int, int)[4]" classname="com.revature.units.MoonDaoTest" time="0.0"/>
-  <testcase name="getMoonByIdFailure" classname="com.revature.units.MoonDaoTest" time="0.016"/>
-  <testcase name="createMoonSuccess(int, int, String)[1]" classname="com.revature.units.MoonDaoTest" time="0.0"/>
-  <testcase name="createMoonSuccess(int, int, String)[2]" classname="com.revature.units.MoonDaoTest" time="0.017"/>
-  <testcase name="createMoonSuccess(int, int, String)[3]" classname="com.revature.units.MoonDaoTest" time="0.008"/>
-  <testcase name="createMoonSuccess(int, int, String)[4]" classname="com.revature.units.MoonDaoTest" time="0.0"/>
-  <testcase name="createMoonFailureOwnership" classname="com.revature.units.MoonDaoTest" time="0.001"/>
-  <testcase name="createMoonFailureMoonExists" classname="com.revature.units.MoonDaoTest" time="0.003"/>
-  <testcase name="createMoonFailurePlanetExists" classname="com.revature.units.MoonDaoTest" time="0.0"/>
-  <testcase name="deleteMoonByIdSuccess(int, int)[1]" classname="com.revature.units.MoonDaoTest" time="0.009"/>
-  <testcase name="deleteMoonByIdSuccess(int, int)[2]" classname="com.revature.units.MoonDaoTest" time="0.003"/>
-  <testcase name="deleteMoonByIdSuccess(int, int)[3]" classname="com.revature.units.MoonDaoTest" time="0.0"/>
-  <testcase name="deleteMoonByIdSuccess(int, int)[4]" classname="com.revature.units.MoonDaoTest" time="0.005"/>
-  <testcase name="deleteMoonByIdFailureOwnership" classname="com.revature.units.MoonDaoTest" time="0.002"/>
-  <testcase name="deleteMoonByIdFailure" classname="com.revature.units.MoonDaoTest" time="0.0">
-    <system-out><![CDATA[Failed to delete.
-]]></system-out>
-  </testcase>
-  <testcase name="getMoonsFromPlanetSuccess(int, int)[1]" classname="com.revature.units.MoonDaoTest" time="0.009"/>
-  <testcase name="getMoonsFromPlanetSuccess(int, int)[2]" classname="com.revature.units.MoonDaoTest" time="0.0"/>
-  <testcase name="getMoonsFromPlanetSuccess(int, int)[3]" classname="com.revature.units.MoonDaoTest" time="0.005"/>
-  <testcase name="getMoonsFromPlanetSuccess(int, int)[4]" classname="com.revature.units.MoonDaoTest" time="0.0"/>
-  <testcase name="getMoonsFromPlanetFailure" classname="com.revature.units.MoonDaoTest" time="0.0"/>
+  <testcase name="createPlanet(String)[1]" classname="com.revature.integration.databasedao.PlanetDaoTest" time="0.422"/>
+  <testcase name="createPlanet(String)[2]" classname="com.revature.integration.databasedao.PlanetDaoTest" time="0.046"/>
+  <testcase name="createPlanet(String)[3]" classname="com.revature.integration.databasedao.PlanetDaoTest" time="0.039"/>
+  <testcase name="getPlanetByPlanetNameSuccess(String)[1]" classname="com.revature.integration.databasedao.PlanetDaoTest" time="0.045"/>
+  <testcase name="getPlanetByPlanetNameSuccess(String)[2]" classname="com.revature.integration.databasedao.PlanetDaoTest" time="0.045"/>
+  <testcase name="getPlanetByPlanetNameSuccess(String)[3]" classname="com.revature.integration.databasedao.PlanetDaoTest" time="0.051"/>
+  <testcase name="getPlanetById(String)[1]" classname="com.revature.integration.databasedao.PlanetDaoTest" time="0.038"/>
+  <testcase name="getPlanetById(String)[2]" classname="com.revature.integration.databasedao.PlanetDaoTest" time="0.038"/>
+  <testcase name="getPlanetById(String)[3]" classname="com.revature.integration.databasedao.PlanetDaoTest" time="0.048"/>
+  <testcase name="getAllPlanets" classname="com.revature.integration.databasedao.PlanetDaoTest" time="0.046"/>
+  <testcase name="deletePLanetByID" classname="com.revature.integration.databasedao.PlanetDaoTest" time="0.041"/>
 </testsuite>

@@ -54,7 +54,7 @@ public class MoonDaoTest {
     public void getAllMoonsSuccess() {
         PreparedStatement ps = Mockito.mock(PreparedStatement.class);
         try(Connection connection = ConnectionUtil.createConnection()) {
-            when(connection.prepareStatement("SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ?")).thenReturn(ps);
+            when(connection.prepareStatement(anyString())).thenReturn(ps);
 
             int ownerId = 1;
             Moon m1 = new Moon();
@@ -101,7 +101,7 @@ public class MoonDaoTest {
     public void getAllMoonsFailure() {
         PreparedStatement ps = Mockito.mock(PreparedStatement.class);
         try {
-            when(connection.prepareStatement("SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ?")).thenReturn(ps);
+            when(connection.prepareStatement(anyString())).thenReturn(ps);
 
             int ownerId = 1;
             ResultSet results = Mockito.mock(ResultSet.class);
@@ -128,7 +128,7 @@ public class MoonDaoTest {
     public void getMoonByNameSuccess(int ownerId, String name) {
         PreparedStatement ps = Mockito.mock(PreparedStatement.class);
         try {
-            when(connection.prepareStatement("SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? and moons.name = ?")).thenReturn(ps);
+            when(connection.prepareStatement(anyString())).thenReturn(ps);
 
             doNothing().when(ps).setInt(1, ownerId);
             doNothing().when(ps).setString(2, name);
@@ -158,7 +158,7 @@ public class MoonDaoTest {
 
         PreparedStatement ps = Mockito.mock(PreparedStatement.class);
         try {
-            when(connection.prepareStatement("SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? and moons.name = ?")).thenReturn(ps);
+            when(connection.prepareStatement(anyString())).thenReturn(ps);
 
             doNothing().when(ps).setInt(1, ownerId);
             doNothing().when(ps).setString(2, name);
@@ -186,7 +186,7 @@ public class MoonDaoTest {
     public void getMoonByIdSuccess(int ownerId, int moonId) {
         PreparedStatement ps = Mockito.mock(PreparedStatement.class);
         try {
-            when(connection.prepareStatement("SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? and moons.id = ?")).thenReturn(ps);
+            when(connection.prepareStatement(anyString())).thenReturn(ps);
 
             doNothing().when(ps).setInt(1, ownerId);
             doNothing().when(ps).setInt(2, moonId);
@@ -216,7 +216,7 @@ public class MoonDaoTest {
 
         PreparedStatement ps = Mockito.mock(PreparedStatement.class);
         try {
-            when(connection.prepareStatement("SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? and moons.id = ?")).thenReturn(ps);
+            when(connection.prepareStatement(anyString())).thenReturn(ps);
 
             doNothing().when(ps).setInt(1, ownerId);
             doNothing().when(ps).setInt(2, moonId);
@@ -415,14 +415,13 @@ public class MoonDaoTest {
         PreparedStatement psDelete = Mockito.mock(PreparedStatement.class);
         try {
             when(connection.prepareStatement("SELECT moons.id, moons.name, moons.myPlanetId FROM planets INNER JOIN moons ON planets.id = moons.myPlanetId WHERE planets.ownerId = ? AND moons.id = ?")).thenReturn(psCheckOwnership);
-            doNothing().when(psCheckOwnership).setInt(1, ownerId);
-            doNothing().when(psCheckOwnership).setInt(2,moonId);
+            doNothing().when(psCheckOwnership).setInt(anyInt(), anyInt());
             ResultSet resultsOwnership = Mockito.mock(ResultSet.class);
             when(psCheckOwnership.executeQuery()).thenReturn(resultsOwnership);
             when(resultsOwnership.next()).thenReturn(true);
 
             when(connection.prepareStatement("DELETE FROM moons WHERE id = ?")).thenReturn(psDelete);
-            doNothing().when(psDelete).setInt(1, moonId);
+            doNothing().when(psDelete).setInt(anyInt(), anyInt());
             when(psDelete.executeUpdate()).thenReturn(1);
 
             Assertions.assertTrue(dao.deleteMoonById(ownerId, moonId));

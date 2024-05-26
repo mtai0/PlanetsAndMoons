@@ -122,18 +122,35 @@ public class PlanetDao {
 
 	public boolean deletePlanetById(int ownerId, int planetId) {
 		try(Connection connection = ConnectionUtil.createConnection()) {
-			String sql = "delete from planets where ownerId = ? and id = ?";
-			PreparedStatement ps = connection.prepareStatement(sql);
-			ps.setInt(1, ownerId);
-			ps.setInt(2, planetId);
-			int rowsAffected = ps.executeUpdate();
-			if (rowsAffected > 0) {
-				//Need to manually delete moons since ON DELETE CASCADE isn't working.
+
+			//Check if User owns planet
+			{
+				String sql = "select * from planets where id = ? and ownerId = ?";
+				PreparedStatement ps = connection.prepareStatement(sql);
+				ps.setInt(1, planetId);
+				ps.setInt(2, ownerId);
+				ResultSet rs = ps.executeQuery();
+				if(!rs.next()) {
+					return false;
+				}
+			}
+
+			//Delete planet's moons. This should be handled by ON DELETE CASCADE instead.
+			{
 				String moonSql = "delete from moons where myPlanetId = ?";
 				PreparedStatement deleteMoons = connection.prepareStatement(moonSql);
 				deleteMoons.setInt(1, planetId);
 				deleteMoons.executeUpdate();
-				return true;
+			}
+
+			//Delete planets.
+			{
+				String sql = "delete from planets where ownerId = ? and id = ?";
+				PreparedStatement ps = connection.prepareStatement(sql);
+				ps.setInt(1, ownerId);
+				ps.setInt(2, planetId);
+				int rowsAffected = ps.executeUpdate();
+				if (rowsAffected > 0) return true;
 			}
 		}catch (SQLException e){
 			System.out.println(e);
