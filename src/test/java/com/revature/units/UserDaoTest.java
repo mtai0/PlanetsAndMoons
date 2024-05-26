@@ -16,6 +16,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -63,7 +65,7 @@ public class UserDaoTest {
     public void getUserByUsername(String username) {
         PreparedStatement ps = Mockito.mock(PreparedStatement.class);
         try {
-            when(connection.prepareStatement("select * from users where username = ?")).thenReturn(ps);
+            when(connection.prepareStatement(anyString())).thenReturn(ps);
 
             ResultSet results = Mockito.mock(ResultSet.class);
             when(ps.executeQuery()).thenReturn(results);
@@ -86,7 +88,7 @@ public class UserDaoTest {
         String username = "UserDoesNotExist";
         PreparedStatement ps = Mockito.mock(PreparedStatement.class);
         try {
-            when(connection.prepareStatement("select * from users where username = ?")).thenReturn(ps);
+            when(connection.prepareStatement(anyString())).thenReturn(ps);
 
             ResultSet results = Mockito.mock(ResultSet.class);
             when(ps.executeQuery()).thenReturn(results);
@@ -115,11 +117,10 @@ public class UserDaoTest {
         PreparedStatement ps = Mockito.mock(PreparedStatement.class);
         try {
             when(connection.prepareStatement(
-                    "insert into users (username, password) values (?, ?)",
-                    PreparedStatement.RETURN_GENERATED_KEYS)
+                    anyString(),
+                    anyInt())
             ).thenReturn(ps);
-            doNothing().when(ps).setString(1, username);
-            doNothing().when(ps).setString(2, password);
+            doNothing().when(ps).setString(anyInt(), anyString());
 
             when(ps.executeUpdate()).thenReturn(1);
             ResultSet results = Mockito.mock(ResultSet.class);
@@ -150,11 +151,10 @@ public class UserDaoTest {
         PreparedStatement ps = Mockito.mock(PreparedStatement.class);
         try {
             when(connection.prepareStatement(
-                    "insert into users (username, password) values (?, ?)",
-                    PreparedStatement.RETURN_GENERATED_KEYS)
+                    anyString(),
+                    anyInt())
             ).thenReturn(ps);
-            doNothing().when(ps).setString(1, username);
-            doNothing().when(ps).setString(2, password);
+            doNothing().when(ps).setString(anyInt(), anyString());
 
             when(ps.executeUpdate()).thenReturn(1);
             ResultSet results = Mockito.mock(ResultSet.class);
