@@ -355,18 +355,24 @@ public class PlanetDaoTest {
         int ownerId = 1;
         int planetId = 1;
 
+        ResultSet rsCheck = Mockito.mock(ResultSet.class);
+        PreparedStatement psCheckPlanet = Mockito.mock(PreparedStatement.class);
         PreparedStatement ps = Mockito.mock(PreparedStatement.class);
         PreparedStatement psDeleteMoons = Mockito.mock(PreparedStatement.class);
         try {
-            when(connection.prepareStatement("delete from planets where ownerId = ? and id = ?"))
-                    .thenReturn(ps);
-            doNothing().when(ps).setInt(1, ownerId);
-            doNothing().when(ps).setInt(2, planetId);
-            when(ps.executeUpdate()).thenReturn(1);
+            when(connection.prepareStatement("select * from planets where id = ? and ownerId = ?")).thenReturn(psCheckPlanet);
+            doNothing().when(psCheckPlanet).setInt(anyInt(), anyInt());
+            when(psCheckPlanet.executeQuery()).thenReturn(rsCheck);
+            when(rsCheck.next()).thenReturn(true);
 
             when(connection.prepareStatement("delete from moons where myPlanetId = ?")).thenReturn(psDeleteMoons);
-            doNothing().when(psDeleteMoons).setInt(1, planetId);
+            doNothing().when(psDeleteMoons).setInt(anyInt(), anyInt());
             when(psDeleteMoons.executeUpdate()).thenReturn(0);
+
+            when(connection.prepareStatement("delete from planets where ownerId = ? and id = ?"))
+                    .thenReturn(ps);
+            doNothing().when(ps).setInt(anyInt(), anyInt());
+            when(ps.executeUpdate()).thenReturn(1);
 
             Assertions.assertTrue(dao.deletePlanetById(ownerId, planetId));
         }
