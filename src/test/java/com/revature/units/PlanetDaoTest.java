@@ -416,7 +416,7 @@ public class PlanetDaoTest {
     }
 
     @Test
-    @DisplayName("PlanetDao::deletePlanetById - Failure (Planet Ownership)")
+    @DisplayName("PlanetDao::deletePlanetById - Failure - Planet Not Found")
     @Order(11)
     public void deletePlanetFailure() {
         int ownerId = -1;
