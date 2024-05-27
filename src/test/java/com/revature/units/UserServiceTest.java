@@ -56,13 +56,12 @@ public class UserServiceTest {
         Assertions.assertTrue(credentialsMatch);
     }
 
-    @ParameterizedTest
-    @DisplayName("UserService::authenticate - Failure -Username Not Found")
+    @Test
+    @DisplayName("UserService::authenticate - Failure - Username Not Found")
     @Order(1)
-    @CsvSource({
-            "wrongUsername,password"
-    })
-    public void authenticateUsernameNotFound(String username, String password) {
+    public void authenticateUsernameNotFound() {
+        String username = "wrongUsername";
+        String password = "password";
         UsernamePasswordAuthentication loginRequestData = new UsernamePasswordAuthentication();
         loginRequestData.setUsername(username);
         loginRequestData.setPassword(password);
@@ -73,13 +72,13 @@ public class UserServiceTest {
         Assertions.assertNull(actual);
     }
 
-    @ParameterizedTest
+    @Test
     @DisplayName("UserService::authenticate - Failure - Wrong Password")
     @Order(2)
-    @CsvSource({
-            "username,wrongPassword"
-    })
-    public void authenticateWrongPassword(String username, String password) {
+    public void authenticateWrongPassword() {
+        String username = "username";
+        String password = "password";
+
         //Create an intentionally wrong password
         String wrongPassword = password;
         if (wrongPassword.length() + 1 <= 30) {
