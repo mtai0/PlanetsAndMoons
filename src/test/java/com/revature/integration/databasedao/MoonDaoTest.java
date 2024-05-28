@@ -149,19 +149,49 @@ public class MoonDaoTest {
         Assertions.assertEquals(moonName, actual.getName());
     }
 
-    @ParameterizedTest
+
+    @Test
     @Order(2)
     @DisplayName("Integration::MoonDao::getMoonById - Success")
-    @CsvSource({
-        "1, 1", // Assuming Moon ID 1 is for owner 1
-        "2, 2"  // Assuming Moon ID 2 is for owner 2
-    })
-    public void getMoonById(int moonId, int ownerId) {
+    public void getMoonById() {
 
+        
+        int userId= -1;
+        String username = "user";
+        String password = "pass";
+        //Populate database
+        try (Connection connection = ConnectionUtil.createConnection()) {
 
-        Moon actual = dao.getMoonById(ownerId, moonId);
+            //Add user to DB
+            String sql2 = "insert into users (username, password) values (?, ?)";
+            PreparedStatement ps2 = connection.prepareStatement(sql2, Statement.RETURN_GENERATED_KEYS);
+            ps2.setString(1, username);
+            ps2.setString(2, password);
+            int userRowsUpdated = ps2.executeUpdate();
+            if (userRowsUpdated <= 0) Assertions.fail("Failed to set up User");
+            ResultSet rsUsers = ps2.getGeneratedKeys();
+            userId = rsUsers.getInt(1);
+
+            //Add Planet to DB
+            String sql = "insert into planets (name, ownerId) values (?, ?)";
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ps.setString(1, "T1");
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+        } catch(SQLException e) {
+            Assertions.fail(" failed to populate database due to a SQLException.");
+        }
+         Planet planet= pdao.getPlanetByName(userId, "T1");
+        Moon moon = new Moon();
+        moon.setName("Luna");
+        moon.setMyPlanetId(planet.getId());
+
+        Moon actual = dao.createMoon(userId, moon); // Assuming ownerId is 1 for simplicity
+
+        Moon find= dao.getMoonById(userId, actual.getId());
         Assertions.assertNotNull(actual);
-        Assertions.assertEquals(moonId, actual.getId());
+        Assertions.assertEquals(actual.getId(), find.getId());
+      
     }
 
     @Test
