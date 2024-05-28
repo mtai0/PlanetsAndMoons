@@ -1,6 +1,8 @@
 package com.revature.api;
 
 import com.revature.controller.UserController;
+import com.revature.models.User;
+import com.revature.models.UsernamePasswordAuthentication;
 import com.revature.repository.UserDao;
 import com.revature.service.UserService;
 import com.revature.utilities.ConnectionUtil;
@@ -79,6 +81,69 @@ public class UserControllerTest {
                 actualStatusCode = response.code();
                 //responseBody = Objects.requireNonNull(response.body().string());
                 Assertions.assertEquals(202, actualStatusCode);
+            }
+        });
+    }
+
+    @Test
+    @DisplayName("API::UserService::authenticate - Failure - Username Not Found")
+    @Order(1)
+    public void authenticateUsernameNotFound() {
+        String username = "wrongUsername";
+        String password = "password";
+
+        JavalinTest.test(app, (server, client) -> {
+            Map<String, String> requestJson = new HashMap<String, String>();
+            requestJson.put("username", username);
+            requestJson.put("password", password);
+
+            int actualStatusCode;
+            //String responseBody;
+            try(Response response = client.post("/login", requestJson)) {
+                actualStatusCode = response.code();
+                //responseBody = Objects.requireNonNull(response.body().string());
+                Assertions.assertEquals(400, actualStatusCode);
+            }
+        });
+    }
+
+    @Test
+    @DisplayName("API::UserService::authenticate - Failure - Wrong Password")
+    @Order(2)
+    public void authenticateWrongPassword() {
+        String username = "username";
+        String password = "password";
+
+        try (Connection connection = ConnectionUtil.createConnection()) {
+            PreparedStatement ps = connection.prepareStatement("insert into users (username, password) values (?, ?)");
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ps.executeUpdate();
+        } catch(SQLException e) {
+            Assertions.fail("authenticate failed to populate database due to a SQLException.");
+        }
+
+        //Create an intentionally wrong password
+        String wrongPassword = password;
+        if (wrongPassword.length() + 1 <= 30) {
+            wrongPassword += "a";
+        }
+        else {
+            wrongPassword = wrongPassword.substring(0, 29);
+        }
+
+        String wrongPasswordInput = wrongPassword;
+        JavalinTest.test(app, (server, client) -> {
+            Map<String, String> requestJson = new HashMap<String, String>();
+            requestJson.put("username", username);
+            requestJson.put("password", wrongPasswordInput);
+
+            int actualStatusCode;
+            //String responseBody;
+            try(Response response = client.post("/login", requestJson)) {
+                actualStatusCode = response.code();
+                //responseBody = Objects.requireNonNull(response.body().string());
+                Assertions.assertEquals(400, actualStatusCode);
             }
         });
     }
