@@ -1,4 +1,4 @@
-package com.revature.pages;
+package com.revature.ui.pages;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
