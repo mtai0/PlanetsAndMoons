@@ -19,6 +19,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class UserControllerTest {
@@ -76,10 +77,8 @@ public class UserControllerTest {
             requestJson.put("password", password);
 
             int actualStatusCode;
-            //String responseBody;
             try(Response response = client.post("/login", requestJson)) {
                 actualStatusCode = response.code();
-                //responseBody = Objects.requireNonNull(response.body().string());
                 Assertions.assertEquals(202, actualStatusCode);
             }
         });
@@ -98,10 +97,8 @@ public class UserControllerTest {
             requestJson.put("password", password);
 
             int actualStatusCode;
-            //String responseBody;
             try(Response response = client.post("/login", requestJson)) {
                 actualStatusCode = response.code();
-                //responseBody = Objects.requireNonNull(response.body().string());
                 Assertions.assertEquals(400, actualStatusCode);
             }
         });
@@ -139,10 +136,61 @@ public class UserControllerTest {
             requestJson.put("password", wrongPasswordInput);
 
             int actualStatusCode;
-            //String responseBody;
             try(Response response = client.post("/login", requestJson)) {
                 actualStatusCode = response.code();
-                //responseBody = Objects.requireNonNull(response.body().string());
+                Assertions.assertEquals(400, actualStatusCode);
+            }
+        });
+    }
+
+    @ParameterizedTest
+    @DisplayName("API::UserService::register - Success")
+    @Order(3)
+    @CsvSource({
+            "newUser,password",
+            "test123,123456"
+    })
+    public void registerSuccess(String username, String password) {
+        JavalinTest.test(app, (server, client) -> {
+            Map<String, String> requestJson = new HashMap<String, String>();
+            requestJson.put("username", username);
+            requestJson.put("password", password);
+
+            int actualStatusCode;
+            String responseBody;
+            try(Response response = client.post("/register", requestJson)) {
+                actualStatusCode = response.code();
+                responseBody = Objects.requireNonNull(response.body().string());
+
+                Assertions.assertEquals(201, actualStatusCode);
+            }
+        });
+    }
+
+    @Test
+    @DisplayName("API::UserService::register - Failure - Existing Username")
+    @Order(4)
+    public void registerExisting() {
+        String username = "existingUser";
+        String password = "password";
+
+        try (Connection connection = ConnectionUtil.createConnection()) {
+            PreparedStatement ps = connection.prepareStatement("insert into users (username, password) values (?, ?)");
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ps.executeUpdate();
+        } catch(SQLException e) {
+            Assertions.fail("register failed to populate database due to a SQLException.");
+        }
+
+        JavalinTest.test(app, (server, client) -> {
+            Map<String, String> requestJson = new HashMap<String, String>();
+            requestJson.put("username", username);
+            requestJson.put("password", password);
+
+            int actualStatusCode;
+            try(Response response = client.post("/register", requestJson)) {
+                actualStatusCode = response.code();
                 Assertions.assertEquals(400, actualStatusCode);
             }
         });
