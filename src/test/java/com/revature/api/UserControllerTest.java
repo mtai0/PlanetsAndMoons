@@ -195,4 +195,86 @@ public class UserControllerTest {
             }
         });
     }
+
+    @ParameterizedTest
+    @DisplayName("API::UserService::register - Failure - Exceed Length")
+    @Order(5)
+    @CsvSource({
+            "moreThan30Characters00000000000,password",
+            "username,moreThan30Characters00000000000",
+            "moreThan30Characters00000000000,moreThan30Characters00000000000"
+    })
+    public void registerMaxLength(String username, String password) {
+        JavalinTest.test(app, (server, client) -> {
+            Map<String, String> requestJson = new HashMap<String, String>();
+            requestJson.put("username", username);
+            requestJson.put("password", password);
+
+            int actualStatusCode;
+            try(Response response = client.post("/register", requestJson)) {
+                actualStatusCode = response.code();
+                Assertions.assertEquals(400, actualStatusCode);
+            }
+        });
+    }
+
+    @Test
+    @DisplayName("API::UserService::register - Failure - Empty Username")
+    @Order(6)
+    public void registerEmptyUsername() {
+        String username = "";
+        String password = "password";
+
+        JavalinTest.test(app, (server, client) -> {
+            Map<String, String> requestJson = new HashMap<String, String>();
+            requestJson.put("username", username);
+            requestJson.put("password", password);
+
+            int actualStatusCode;
+            try(Response response = client.post("/register", requestJson)) {
+                actualStatusCode = response.code();
+                Assertions.assertEquals(400, actualStatusCode);
+            }
+        });
+    }
+
+    @Test
+    @DisplayName("API::UserService::register - Failure - Empty Password")
+    @Order(7)
+    public void registerEmptyPassword() {
+        String username = "username";
+        String password = "";
+
+        JavalinTest.test(app, (server, client) -> {
+            Map<String, String> requestJson = new HashMap<String, String>();
+            requestJson.put("username", username);
+            requestJson.put("password", password);
+
+            int actualStatusCode;
+            try(Response response = client.post("/register", requestJson)) {
+                actualStatusCode = response.code();
+                Assertions.assertEquals(400, actualStatusCode);
+            }
+        });
+    }
+
+    @Test
+    @DisplayName("API::UserService::register - Failure - Empty")
+    @Order(8)
+    public void registerEmpty() {
+        String username = "";
+        String password = "";
+
+        JavalinTest.test(app, (server, client) -> {
+            Map<String, String> requestJson = new HashMap<String, String>();
+            requestJson.put("username", username);
+            requestJson.put("password", password);
+
+            int actualStatusCode;
+            try(Response response = client.post("/register", requestJson)) {
+                actualStatusCode = response.code();
+                Assertions.assertEquals(400, actualStatusCode);
+            }
+        });
+    }
 }
