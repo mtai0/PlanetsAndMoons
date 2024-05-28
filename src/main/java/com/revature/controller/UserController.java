@@ -34,7 +34,12 @@ public class UserController {
 
 		User newUser = userService.register(registerRequest);
 
-		ctx.json(newUser).status(201);
+		if (newUser != null) {
+			ctx.json(newUser).status(201);
+		}
+		else {
+			ctx.status(400);
+		}
 	}
 
 	public void logout(Context ctx) {

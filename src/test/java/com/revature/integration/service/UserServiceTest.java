@@ -61,7 +61,7 @@ public class UserServiceTest {
             ps.setString(2, password);
             ps.executeUpdate();
         } catch(SQLException e) {
-            Assertions.fail("authenticate failed to populate database due to a SQLException.");
+            Assertions.fail("authenticateValid failed to populate database due to a SQLException.");
         }
 
         UsernamePasswordAuthentication loginRequestData = new UsernamePasswordAuthentication();
@@ -101,7 +101,7 @@ public class UserServiceTest {
             ps.setString(2, password);
             ps.executeUpdate();
         } catch(SQLException e) {
-            Assertions.fail("authenticate failed to populate database due to a SQLException.");
+            Assertions.fail("authenticateWrongPassword failed to populate database due to a SQLException.");
         }
 
         //Create an intentionally wrong password
@@ -152,7 +152,7 @@ public class UserServiceTest {
             ps.setString(2, password);
             ps.executeUpdate();
         } catch(SQLException e) {
-            Assertions.fail("authenticate failed to populate database due to a SQLException.");
+            Assertions.fail("registerExisting failed to populate database due to a SQLException.");
         }
 
         User newUser = new User();
