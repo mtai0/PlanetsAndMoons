@@ -95,9 +95,7 @@ public class MoonDaoTest {
         moon.setMyPlanetId(planet.getId());
 
         Moon actual = dao.createMoon(userId, moon); // Assuming ownerId is 1 for simplicity
-
-        Assertions.assertNotNull(actual);
-       
+        
         Assertions.assertEquals(name, actual.getName());
     }
 
@@ -143,9 +141,9 @@ public class MoonDaoTest {
 
         Moon actual = dao.createMoon(userId, moon); // Assuming ownerId is 1 for simplicity
 
-        Assertions.assertNotNull(actual);
+       
 
-        Assertions.assertNotNull(actual);
+      
         Assertions.assertEquals(moonName, actual.getName());
     }
 
@@ -189,7 +187,7 @@ public class MoonDaoTest {
         Moon actual = dao.createMoon(userId, moon); // Assuming ownerId is 1 for simplicity
 
         Moon find= dao.getMoonById(userId, actual.getId());
-        Assertions.assertNotNull(actual);
+        
         Assertions.assertEquals(actual.getId(), find.getId());
       
     }
