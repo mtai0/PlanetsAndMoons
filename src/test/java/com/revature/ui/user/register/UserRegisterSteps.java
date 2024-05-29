@@ -1,7 +1,6 @@
-package com.revature.ui.user;
+package com.revature.ui.user.register;
 
-import com.revature.MainDriver;
-import com.revature.models.User;
+import com.revature.MainDriverTest;
 import com.revature.ui.pages.CreateAccount;
 import com.revature.utilities.ConnectionUtil;
 import io.cucumber.java.After;
@@ -12,7 +11,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -44,7 +42,7 @@ public class UserRegisterSteps {
 
     @BeforeAll
     public static void startWebsite() {
-        MainDriver.main(null);
+        MainDriverTest.main(null);
     }
 
     @Before
@@ -102,18 +100,18 @@ public class UserRegisterSteps {
 
     @Then("account creation is successful")
     public void accountCreationIsSuccessful() {
-        //Assertions.assertTrue(createAccountPage.checkSuccess());
+        Assertions.assertTrue(createAccountPage.checkSuccess());
     }
 
     @And("\"{string}\" is of invalid length")
     public void isOfInvalidLength(String str) {
         boolean isInvalid = str.isEmpty() || str.length() > 30;
-        if (!isInvalid) Assertions.fail("String is NOT of INVALID length.");
+        if (!isInvalid) Assertions.fail("String is of VALID length. (Expected: INVALID)");
     }
 
     @Then("account creation fails")
     public void accountCreationFails() {
-        //Assertions.assertTrue(createAccountPage.checkFail());
+        Assertions.assertTrue(createAccountPage.checkFail());
     }
 
     @Given("an account with the username \"{string}\" already exists")

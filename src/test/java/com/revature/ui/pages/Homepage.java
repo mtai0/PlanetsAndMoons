@@ -3,6 +3,10 @@ package com.revature.ui.pages;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.time.Duration;
 
 public class Homepage {
     private WebDriver driver;
@@ -44,5 +48,16 @@ public class Homepage {
     public void get() {
         driver.get("http://localhost:7000/api/webpage/home");
         currentSetting = SiteSetting.PLANET;    //This is the default, but be sure to actually read-in the real value.
+    }
+
+    public boolean isOnHomepage() {
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+            wait.until(ExpectedConditions.titleContains("Home"));
+            return true;
+        }
+        catch (Exception e) {
+            return false;
+        }
     }
 }
