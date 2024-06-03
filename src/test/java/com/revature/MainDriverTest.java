@@ -1,7 +1,12 @@
 package com.revature;
 
+import com.revature.utilities.ConnectionUtil;
 import com.revature.utilities.RequestMapper;
 import io.javalin.Javalin;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class MainDriverTest {
 
@@ -16,6 +21,20 @@ public class MainDriverTest {
             });
         });
         RequestMapper.setUpEndPoints(app);
-        app.start(7000);   
+        app.start(7000);
+
+        //Reset Test Database
+        try (Connection connection = ConnectionUtil.createConnection()) {
+            PreparedStatement psMoon = connection.prepareStatement("DELETE FROM moons;");
+            psMoon.executeUpdate();
+
+            PreparedStatement psPlanet = connection.prepareStatement("DELETE FROM planets;");
+            psPlanet.executeUpdate();
+
+            PreparedStatement psUser = connection.prepareStatement("DELETE FROM users;");
+            psUser.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
