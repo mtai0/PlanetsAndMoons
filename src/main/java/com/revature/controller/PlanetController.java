@@ -24,8 +24,14 @@ public class PlanetController {
 		String planetName = ctx.pathParam("name");
 		
 		Planet p = planetService.getPlanetByName(u.getId(), planetName);
-		
-		ctx.json(p).status(200);
+
+		//This should be exception-based, but not enough time to refactor this.
+        if (p.getName() != null) {
+			ctx.json(p).status(200);
+        }
+		else {
+			ctx.json(p).status(400);
+		}
 	}
 
 	public void getPlanetByID(Context ctx) {
@@ -34,15 +40,29 @@ public class PlanetController {
 		
 		Planet p = planetService.getPlanetById(u.getId(), planetId);
 
-		ctx.json(p).status(200);
+		//This should be exception-based, but not enough time to refactor this.
+		if (p.getName() != null) {
+			ctx.json(p).status(200);
+		}
+		else {
+			ctx.json(p).status(400);
+		}
 	}
 
 	public void createPlanet(Context ctx) {
 		Planet planetToBeCreated = ctx.bodyAsClass(Planet.class);
 		User u = ctx.sessionAttribute("user");
 		
-		Planet createdPlanet = planetService.createPlanet(u.getId(), planetToBeCreated);
-		ctx.json(createdPlanet).status(201);
+		Planet p = planetService.createPlanet(u.getId(), planetToBeCreated);
+
+		//This should be exception-based, but not enough time to refactor this.
+		if (p.getName() != null) {
+			ctx.json(p).status(201);
+		}
+		else {
+			ctx.json(p).status(400);
+		}
+
 	}
 
 	public void deletePlanet(Context ctx) {
