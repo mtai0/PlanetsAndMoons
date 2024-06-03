@@ -26,8 +26,14 @@ public class MoonController {
 		String moonName = ctx.pathParam("name");
 		
 		Moon m = moonService.getMoonByName(u.getId(), moonName);
-		
-		ctx.json(m).status(200);
+
+		//This should be exception-based, but not enough time to refactor this.
+		if (m.getName() != null) {
+			ctx.json(m).status(200);
+		}
+		else {
+			ctx.json(m).status(400);
+		}
 	}
 
 	public void getMoonById(Context ctx) {
@@ -35,24 +41,42 @@ public class MoonController {
 		int moonId = ctx.pathParamAsClass("id", Integer.class).get();
 		
 		Moon m = moonService.getMoonById(u.getId(), moonId);
-		
-		ctx.json(m).status(200);
+
+		//This should be exception-based, but not enough time to refactor this.
+		if (m.getName() != null) {
+			ctx.json(m).status(200);
+		}
+		else {
+			ctx.json(m).status(400);
+		}
 	}
 
 	public void createMoon(Context ctx) {
-		Moon m = ctx.bodyAsClass(Moon.class);
+		Moon outGoingMoon = ctx.bodyAsClass(Moon.class);
 		User u = ctx.sessionAttribute("user");
 
-		Moon outGoingMoon = moonService.createMoon(u.getId(), m);
-		ctx.json(outGoingMoon).status(201);
+		Moon m = moonService.createMoon(u.getId(), outGoingMoon);
+
+
+		//This should be exception-based, but not enough time to refactor this.
+		if (m.getName() != null) {
+			ctx.json(outGoingMoon).status(201);
+		}
+		else {
+			ctx.json(outGoingMoon).status(400);
+		}
 	}
 
 	public void deleteMoon(Context ctx) {
 		int moonId = ctx.pathParamAsClass("id", Integer.class).get();
 		User u = ctx.sessionAttribute("user");
-		moonService.deleteMoonById(u.getId(), moonId);
-		
-		ctx.json("Moon successfully deleted").status(202);
+
+		if (moonService.deleteMoonById(u.getId(), moonId)) {
+			ctx.json("Moon successfully deleted").status(202);
+		}
+		else {
+			ctx.json("Moon could not be deleted").status(400);
+		}
 	}
 	
 	public void getPlanetMoons(Context ctx) {
