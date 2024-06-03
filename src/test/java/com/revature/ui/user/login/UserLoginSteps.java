@@ -1,6 +1,7 @@
 package com.revature.ui.user.login;
 
 import com.revature.MainDriver;
+import com.revature.MainDriverTest;
 import com.revature.ui.pages.Homepage;
 import com.revature.ui.pages.Login;
 import com.revature.utilities.ConnectionUtil;
@@ -43,7 +44,7 @@ public class UserLoginSteps {
 
     @BeforeAll
     public static void startWebsite() {
-        MainDriver.main(null);
+        MainDriverTest.main(null);
     }
 
     @Before
