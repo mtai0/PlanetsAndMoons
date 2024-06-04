@@ -1,15 +1,19 @@
 package com.revature.ui.pages;
 
+import java.time.Duration;
+
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
-import java.time.Duration;
 
 public class Homepage {
     private WebDriver driver;
+
+    String moonName;
 
     @FindBy(id = "deleteInput")
     WebElement deleteText;
@@ -60,4 +64,52 @@ public class Homepage {
             return false;
         }
     }
+  
+    public void clickMoonSelector()
+    {
+      
+
+         Select locationSelect = new Select(locationSelectElement);
+       
+        locationSelect.selectByVisibleText("Moon");
+       
+        
+    }
+
+      public void inputMoonName(String moonName) {
+        this.moonName=moonName;
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebElement moonNameInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("moonNameInput")));
+        moonNameInput.sendKeys(moonName);
+    }
+
+    // Method to input orbited planet ID
+    public void inputOrbitedPlanet(String planetId) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebElement orbitedPlanetInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("orbitedPlanetInput")));
+        orbitedPlanetInput.sendKeys(planetId);
+    }
+
+    public void clickSubmitButton() {
+        WebDriverWait wait = new WebDriverWait(driver,  Duration.ofSeconds(5));
+        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(By.className("submit-button")));
+        submitButton.click();
+       
+       
+    }
+       public boolean moonadded() {
+        if(moonName=="")
+        {
+            return false;
+        }
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        By moonLocator = By.xpath("//table[@id='celestialTable']//tr[td[contains(text(), '" + moonName + "')]]");
+         try{
+        return wait.until(ExpectedConditions.visibilityOfElementLocated(moonLocator)) != null;
+         }
+         catch(Exception e){
+             return false;
+         }
+    }
+
 }
