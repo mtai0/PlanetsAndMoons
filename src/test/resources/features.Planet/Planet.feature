@@ -1,90 +1,35 @@
-Feature:Planet Management
+Feature: Users can manage planets in the Planetarium
+  Background: User is logged in and on the Planet Management page
+    Given User is on the Planet Management page
 
-  Background:
-    Given the user has an existing account
-    And the user is logged in
-    And the user is on the home page
-
-  Scenario Outline: Add Planet - Valid
-    Given the planet name <planetName> does not already exist
-    And the Planet option is selected in the location select
-    When the user enters <planetName> in the planet add input
-    And clicks the submit planet button
-    Then the planet name <planetName> should be added successfully to the Celestial Table
-
+  Scenario Outline: Users can create a new planet
+    Given no planet exists with "<planetName>" name
+    And "<planetName>" is of valid length
+    When User inputs the planet details "<planetName>"
+    And User clicks on the add planet button
+    Then planet creation is successful
     Examples:
-      | planetName   |
-      | "earth"      |
-      | "Jupiter"    |
-      | "SATURN"     |
-      | "  Venus  "  |
-      | "MARS123"    |
-      | "alpha@beta" |
+      |planetName |
+      | Earth      |
+      | Mars       |
 
-  Scenario Outline: Add Planet - Invalid
-    Given the Planet option is selected in the location select
-    When the user enters <planetName> in the planet add input
-    And clicks the submit planet button
-    Then the Error alert should be displayed
-
-    Examples: Negative Cases
-      | planetName                                      |
-      | ""                                              |
-      | "AstroAdventureWonderlandWonderlandWonderland " |
-      | "earth; DROP TABLE planets;"                    |
-
-  Scenario: Add Planet - Planet Already Exists
-    Given the planet name "earth" already exists
-    And the Planet option is selected in the location select
-    When the user enters "earth" in the planet add input
-    And clicks the submit planet button
-    Then  the Error alert should be displayed
-
-
-  Scenario Outline: Remove Planet - Valid
-    Given the planet name <planetName> already exists
-    And the Planet option is selected in the location select
-    When the user enters planet ID to delete <planetName> in the delete planet input
-    And clicks the delete button
-    Then the alert should be displayed for Planet <planetName> Deleted Successfully
-
+  Scenario Outline: Users cannot create a planet if the planet name length is invalid
+    Given no planet "<planetName>" exists
+    And "<planetName>" is of invalid length
+    When User inputs the moon details  "<planetName>"
+    And User clicks on the add planet button to
+    Then planet creation fails
     Examples:
       | planetName |
-      | "earth"    |
-      | "jupiter"  |
+      | Earth      |
+      | Mars       |
 
-  Scenario Outline: Remove Planet - Invalid
-    Given the planet name "saturn" already exists
-    And the Planet option is selected in the location select
-    When the user enters <planetName> in the delete planet input
-    And clicks the delete button
-    Then the Error alert should be displayed
-
+  Scenario Outline: Users cannot create a planet if there is already a planet with the given name
+    Given a planet with the name "<planetName>"  exists
+    When User inputs the moon details "<moonName>" | "<planetName>"
+    And User clicks on the add planet button
+    Then planet creation fails
     Examples:
-      | planetName   |
-      | "saturn"     |
-      | ""           |
-      | "1000000000" |
-
-  Scenario Outline: Search Planet - Valid
-    Given the planet name <planetName> already exists
-    When the user enters <planetName> in the search planet input
-    And clicks the search planet button
-    Then the celestial table displays the <planetName>
-
-    Examples:
-      | planetName   |
-      | "SATURN"     |
-      | "  Venus  "  |
-      | "MARS123"    |
-      | "alpha@beta" |
-
-  Scenario Outline: Search Planet - Invalid
-    When the user enters <planetName> in the search planet input
-    And clicks the search planet button
-    Then the Error alert should be displayed
-
-    Examples:
-      | planetName                     |
-      | "NonExistentPlanet"            |
-      | "planet'; DROP TABLE planets;" |
+      | planetName |
+      | Earth      |
+      | Mars       |
