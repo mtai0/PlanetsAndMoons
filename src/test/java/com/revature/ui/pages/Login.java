@@ -28,8 +28,9 @@ public class Login {
         this.driver = driver;
     }
 
+    private final String url = "http://localhost:7000";
     public void get() {
-        driver.get("http://localhost:7000/webpage/login");
+        driver.get(url + "/webpage/login");
     }
 
     public void enterCredentials(String username, String password) {
