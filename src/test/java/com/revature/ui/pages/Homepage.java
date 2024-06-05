@@ -115,7 +115,7 @@ public class Homepage {
     }
 
     public boolean moonsearched(String moon) {
-        if(moon=="")
+        if(moon.equals(""))
         {
             return false;
         }
@@ -130,7 +130,7 @@ public class Homepage {
     }
 
     public boolean moonDeleted() {
-        if(moonName=="")
+        if(moonName.equals(""))
         {
             return true;
         }
