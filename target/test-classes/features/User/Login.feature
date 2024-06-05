@@ -26,6 +26,12 @@ Feature: Users can log in to the Planetarium
     And User clicks the login button
     Then User fails to log in
 
+  Scenario: Users cannot log in if they leave all fields blank
+    Given User has already created an account with the credentials "username" | "password"
+    When User enters account credentials "" | ""
+    And User clicks the login button
+    Then User fails to log in
+
   Scenario: Users cannot log in if they provide an unregistered username
     Given username "newUser" is unregistered
     When User enters account credentials "newUser" | "password"
