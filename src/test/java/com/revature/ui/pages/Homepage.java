@@ -1,16 +1,18 @@
 package com.revature.ui.pages;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 
 public class Homepage {
     private WebDriver driver;
-
+    String planetName;
     @FindBy(id = "deleteInput")
     WebElement deleteText;
 
@@ -57,6 +59,48 @@ public class Homepage {
             return true;
         }
         catch (Exception e) {
+            return false;
+        }
+    }
+
+    public void clickPlanetSelector()
+    {
+
+
+        Select locationSelect = new Select(locationSelectElement);
+
+        locationSelect.selectByVisibleText("Moon");
+
+
+    }
+
+    public void inputPlanetName(String planetName) {
+        this.planetName=planetName;
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebElement planetInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("planetNameInput")));
+        planetInput.sendKeys(planetName);
+    }
+
+
+
+    public void clickSubmitButton() {
+        WebDriverWait wait = new WebDriverWait(driver,  Duration.ofSeconds(5));
+        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(By.className("submit-button")));
+        submitButton.click();
+
+
+    }
+    public boolean planetAdded() {
+        if(planetName=="")
+        {
+            return false;
+        }
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        By planetLocator = By.xpath("//table[@id='celestialTable']//tr[td[contains(text(), '" + planetName + "')]]");
+        try{
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(planetLocator)) != null;
+        }
+        catch(Exception e){
             return false;
         }
     }
