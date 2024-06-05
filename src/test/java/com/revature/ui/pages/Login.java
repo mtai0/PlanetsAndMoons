@@ -70,13 +70,5 @@ public class Login {
     }
 
 
-    public void waitForLoginPageLoad() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        wait.until(ExpectedConditions.visibilityOf(loginButton));
-    }
 
-    public void waitForHomePageLoad() {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-        wait.until(ExpectedConditions.visibilityOf(greetingBtn));
-    }
 }
