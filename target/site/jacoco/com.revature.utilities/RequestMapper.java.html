@@ -17,85 +17,85 @@ import com.revature.service.UserService;
 import io.javalin.Javalin;
 
 <span class="nc" id="L19">public class RequestMapper {</span>
-<span class="nc" id="L20">    private static final UserDao UserDao = new UserDao();</span>
+<span class="fc" id="L20">    private static final UserDao UserDao = new UserDao();</span>
     //private static final UserService UserService = new UserServiceMock(UserDao);
-<span class="nc" id="L22">	private static final UserService UserService = new UserService(UserDao);</span>
-<span class="nc" id="L23">    private static final UserController UserController = new UserController(UserService);</span>
-<span class="nc" id="L24">    private static final PlanetDao PlanetDao = new PlanetDao();</span>
-<span class="nc" id="L25">    private static final PlanetService PlanetService = new PlanetService(PlanetDao);</span>
-<span class="nc" id="L26">    private static final PlanetController planetController = new PlanetController(PlanetService);</span>
-<span class="nc" id="L27">    private static final MoonDao MoonDao = new MoonDao();</span>
-<span class="nc" id="L28">    private static final MoonService moonService = new MoonService(MoonDao);</span>
-<span class="nc" id="L29">    private static final MoonController moonController = new MoonController(moonService);</span>
+<span class="fc" id="L22">	private static final UserService UserService = new UserService(UserDao);</span>
+<span class="fc" id="L23">    private static final UserController UserController = new UserController(UserService);</span>
+<span class="fc" id="L24">    private static final PlanetDao PlanetDao = new PlanetDao();</span>
+<span class="fc" id="L25">    private static final PlanetService PlanetService = new PlanetService(PlanetDao);</span>
+<span class="fc" id="L26">    private static final PlanetController planetController = new PlanetController(PlanetService);</span>
+<span class="fc" id="L27">    private static final MoonDao MoonDao = new MoonDao();</span>
+<span class="fc" id="L28">    private static final MoonService moonService = new MoonService(MoonDao);</span>
+<span class="fc" id="L29">    private static final MoonController moonController = new MoonController(moonService);</span>
 
     public static void setUpEndPoints(Javalin app) {
 		// Authenticate user and create a session for the user, sending username/password in the body as JSON
-<span class="nc" id="L33">		app.post(&quot;/login&quot;, ctx -&gt; UserController.authenticate(ctx));</span>
+<span class="fc" id="L33">		app.post(&quot;/login&quot;, ctx -&gt; UserController.authenticate(ctx));</span>
 
 		// Register a new user, sending username/password in the body as JSON
-<span class="nc" id="L36">		app.post(&quot;/register&quot;, ctx -&gt; UserController.register(ctx));</span>
+<span class="fc" id="L36">		app.post(&quot;/register&quot;, ctx -&gt; UserController.register(ctx));</span>
 		
 		// Invalidate session
-<span class="nc" id="L39">		app.delete(&quot;/logout&quot;, ctx -&gt; UserController.logout(ctx));</span>
+<span class="pc" id="L39">		app.delete(&quot;/logout&quot;, ctx -&gt; UserController.logout(ctx));</span>
 
 		// login and create are available without needing to be logged in
-<span class="nc" id="L42">		app.get(&quot;/webpage/login&quot;, ctx -&gt; ctx.html(PageProvider.getPage(&quot;login&quot;)));</span>
+<span class="pc" id="L42">		app.get(&quot;/webpage/login&quot;, ctx -&gt; ctx.html(PageProvider.getPage(&quot;login&quot;)));</span>
 
-<span class="nc" id="L44">		app.get(&quot;/webpage/create&quot;, ctx -&gt; ctx.html(PageProvider.getPage(&quot;create&quot;)));</span>
+<span class="pc" id="L44">		app.get(&quot;/webpage/create&quot;, ctx -&gt; ctx.html(PageProvider.getPage(&quot;create&quot;)));</span>
 		
 		// Check for valid sessions
 		// Throw a custom exception if a session is not valid
 		// This exception will be handled separately
-<span class="nc" id="L49">		app.before(&quot;/api/*&quot;, ctx -&gt; {	</span>
+<span class="fc" id="L49">		app.before(&quot;/api/*&quot;, ctx -&gt; {	</span>
 <span class="nc bnc" id="L50" title="All 2 branches missed.">			if(!UserController.checkAuthorization(ctx)) {</span>
 <span class="nc" id="L51">				throw new NotLoggedInException();</span>
 			}
 <span class="nc" id="L53">		});</span>
 		
 		// Handling the exception when a session doesn't exist
-<span class="nc" id="L56">		app.exception(NotLoggedInException.class, (e,ctx) -&gt; {</span>
+<span class="fc" id="L56">		app.exception(NotLoggedInException.class, (e,ctx) -&gt; {</span>
 <span class="nc" id="L57">			ctx.html(e.getMessage()).status(401);</span>
 <span class="nc" id="L58">		});</span>
 
 		// requires a valid session to be accessed
-<span class="nc" id="L61">		app.get(&quot;/api/webpage/home&quot;, ctx -&gt; ctx.html(PageProvider.getPage(&quot;home&quot;)));</span>
+<span class="pc" id="L61">		app.get(&quot;/api/webpage/home&quot;, ctx -&gt; ctx.html(PageProvider.getPage(&quot;home&quot;)));</span>
 		
 		
 		// Get all Planets
-<span class="nc" id="L65">		app.get(&quot;api/planet&quot;, ctx -&gt; planetController.getAllPlanets(ctx));</span>
+<span class="pc" id="L65">		app.get(&quot;api/planet&quot;, ctx -&gt; planetController.getAllPlanets(ctx));</span>
 		
 		// Get a planet with matching name
-<span class="nc" id="L68">		app.get(&quot;api/planet/name/{name}&quot;, ctx -&gt; planetController.getPlanetByName(ctx));</span>
+<span class="pc" id="L68">		app.get(&quot;api/planet/name/{name}&quot;, ctx -&gt; planetController.getPlanetByName(ctx));</span>
 		
 		// Get a planet with matching ID
-<span class="nc" id="L71">		app.get(&quot;api/planet/id/{id}&quot;, ctx -&gt; planetController.getPlanetByID(ctx));</span>
+<span class="pc" id="L71">		app.get(&quot;api/planet/id/{id}&quot;, ctx -&gt; planetController.getPlanetByID(ctx));</span>
 		
 		// Get moons associated with a planet
-<span class="nc" id="L74">		app.get(&quot;api/planet/{id}/moon&quot;, ctx -&gt; moonController.getPlanetMoons(ctx));</span>
+<span class="pc" id="L74">		app.get(&quot;api/planet/{id}/moon&quot;, ctx -&gt; moonController.getPlanetMoons(ctx));</span>
 		
 		// Get all moons
-<span class="nc" id="L77">		app.get(&quot;api/moon&quot;, ctx -&gt; moonController.getAllMoons(ctx));</span>
+<span class="pc" id="L77">		app.get(&quot;api/moon&quot;, ctx -&gt; moonController.getAllMoons(ctx));</span>
 		
 		// Get a moon with matching name
-<span class="nc" id="L80">		app.get(&quot;api/moon/name/{name}&quot;, ctx -&gt; moonController.getMoonByName(ctx));</span>
+<span class="pc" id="L80">		app.get(&quot;api/moon/name/{name}&quot;, ctx -&gt; moonController.getMoonByName(ctx));</span>
 		
 		// Get a moon with matching ID
-<span class="nc" id="L83">		app.get(&quot;api/moon/id/{id}&quot;, ctx -&gt; moonController.getMoonById(ctx));</span>
+<span class="pc" id="L83">		app.get(&quot;api/moon/id/{id}&quot;, ctx -&gt; moonController.getMoonById(ctx));</span>
 		
 
 		// Create a new planet, sending the data in the body as JSON
-<span class="nc" id="L87">		app.post(&quot;api/planet&quot;, ctx -&gt; planetController.createPlanet(ctx));</span>
+<span class="pc" id="L87">		app.post(&quot;api/planet&quot;, ctx -&gt; planetController.createPlanet(ctx));</span>
 		
 		// Create a new moon, sending the data in the body as JSON
-<span class="nc" id="L90">		app.post(&quot;api/moon&quot;, ctx -&gt; moonController.createMoon(ctx));</span>
+<span class="pc" id="L90">		app.post(&quot;api/moon&quot;, ctx -&gt; moonController.createMoon(ctx));</span>
 		
 
 		// Delete a planet and all of its moons
-<span class="nc" id="L94">		app.delete(&quot;api/planet/{id}&quot;, ctx -&gt; planetController.deletePlanet(ctx));</span>
+<span class="pc" id="L94">		app.delete(&quot;api/planet/{id}&quot;, ctx -&gt; planetController.deletePlanet(ctx));</span>
 		
 		// Delete a moon
-<span class="nc" id="L97">		app.delete(&quot;api/moon/{id}&quot;, ctx -&gt; moonController.deleteMoon(ctx));</span>
-<span class="nc" id="L98">    }</span>
+<span class="pc" id="L97">		app.delete(&quot;api/moon/{id}&quot;, ctx -&gt; moonController.deleteMoon(ctx));</span>
+<span class="fc" id="L98">    }</span>
     
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

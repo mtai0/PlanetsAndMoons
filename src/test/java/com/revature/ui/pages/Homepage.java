@@ -50,8 +50,10 @@ public class Homepage {
         this.driver = driver;
     }
 
+    private final String url = "http://localhost:7000";
+
     public void get() {
-        driver.get("http://localhost:7000/api/webpage/home");
+        driver.get(url + "/api/webpage/home");
         currentSetting = SiteSetting.PLANET;    //This is the default, but be sure to actually read-in the real value.
     }
 

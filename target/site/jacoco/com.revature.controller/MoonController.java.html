@@ -12,9 +12,9 @@ public class MoonController {
 	
 	private MoonService moonService;
 
-<span class="nc" id="L15">	public MoonController(MoonService moonService) {</span>
-<span class="nc" id="L16">		this.moonService = moonService;</span>
-<span class="nc" id="L17">	}</span>
+<span class="fc" id="L15">	public MoonController(MoonService moonService) {</span>
+<span class="fc" id="L16">		this.moonService = moonService;</span>
+<span class="fc" id="L17">	}</span>
 
 	public void getAllMoons(Context ctx) {
 <span class="nc" id="L20">		User u = ctx.sessionAttribute(&quot;user&quot;);</span>
@@ -26,41 +26,65 @@ public class MoonController {
 <span class="nc" id="L26">		String moonName = ctx.pathParam(&quot;name&quot;);</span>
 		
 <span class="nc" id="L28">		Moon m = moonService.getMoonByName(u.getId(), moonName);</span>
-		
-<span class="nc" id="L30">		ctx.json(m).status(200);</span>
-<span class="nc" id="L31">	}</span>
+
+		//This should be exception-based, but not enough time to refactor this.
+<span class="nc bnc" id="L31" title="All 2 branches missed.">		if (m.getName() != null) {</span>
+<span class="nc" id="L32">			ctx.json(m).status(200);</span>
+		}
+		else {
+<span class="nc" id="L35">			ctx.json(m).status(400);</span>
+		}
+<span class="nc" id="L37">	}</span>
 
 	public void getMoonById(Context ctx) {
-<span class="nc" id="L34">		User u = ctx.sessionAttribute(&quot;user&quot;);</span>
-<span class="nc" id="L35">		int moonId = ctx.pathParamAsClass(&quot;id&quot;, Integer.class).get();</span>
+<span class="nc" id="L40">		User u = ctx.sessionAttribute(&quot;user&quot;);</span>
+<span class="nc" id="L41">		int moonId = ctx.pathParamAsClass(&quot;id&quot;, Integer.class).get();</span>
 		
-<span class="nc" id="L37">		Moon m = moonService.getMoonById(u.getId(), moonId);</span>
-		
-<span class="nc" id="L39">		ctx.json(m).status(200);</span>
-<span class="nc" id="L40">	}</span>
+<span class="nc" id="L43">		Moon m = moonService.getMoonById(u.getId(), moonId);</span>
+
+		//This should be exception-based, but not enough time to refactor this.
+<span class="nc bnc" id="L46" title="All 2 branches missed.">		if (m.getName() != null) {</span>
+<span class="nc" id="L47">			ctx.json(m).status(200);</span>
+		}
+		else {
+<span class="nc" id="L50">			ctx.json(m).status(400);</span>
+		}
+<span class="nc" id="L52">	}</span>
 
 	public void createMoon(Context ctx) {
-<span class="nc" id="L43">		Moon m = ctx.bodyAsClass(Moon.class);</span>
-<span class="nc" id="L44">		User u = ctx.sessionAttribute(&quot;user&quot;);</span>
+<span class="nc" id="L55">		Moon outGoingMoon = ctx.bodyAsClass(Moon.class);</span>
+<span class="nc" id="L56">		User u = ctx.sessionAttribute(&quot;user&quot;);</span>
 
-<span class="nc" id="L46">		Moon outGoingMoon = moonService.createMoon(u.getId(), m);</span>
-<span class="nc" id="L47">		ctx.json(outGoingMoon).status(201);</span>
-<span class="nc" id="L48">	}</span>
+<span class="nc" id="L58">		Moon m = moonService.createMoon(u.getId(), outGoingMoon);</span>
+
+
+		//This should be exception-based, but not enough time to refactor this.
+<span class="nc bnc" id="L62" title="All 2 branches missed.">		if (m.getName() != null) {</span>
+<span class="nc" id="L63">			ctx.json(outGoingMoon).status(201);</span>
+		}
+		else {
+<span class="nc" id="L66">			ctx.json(outGoingMoon).status(400);</span>
+		}
+<span class="nc" id="L68">	}</span>
 
 	public void deleteMoon(Context ctx) {
-<span class="nc" id="L51">		int moonId = ctx.pathParamAsClass(&quot;id&quot;, Integer.class).get();</span>
-<span class="nc" id="L52">		User u = ctx.sessionAttribute(&quot;user&quot;);</span>
-<span class="nc" id="L53">		moonService.deleteMoonById(u.getId(), moonId);</span>
-		
-<span class="nc" id="L55">		ctx.json(&quot;Moon successfully deleted&quot;).status(202);</span>
-<span class="nc" id="L56">	}</span>
+<span class="nc" id="L71">		int moonId = ctx.pathParamAsClass(&quot;id&quot;, Integer.class).get();</span>
+<span class="nc" id="L72">		User u = ctx.sessionAttribute(&quot;user&quot;);</span>
+
+<span class="nc bnc" id="L74" title="All 2 branches missed.">		if (moonService.deleteMoonById(u.getId(), moonId)) {</span>
+<span class="nc" id="L75">			ctx.json(&quot;Moon successfully deleted&quot;).status(202);</span>
+		}
+		else {
+<span class="nc" id="L78">			ctx.json(&quot;Moon could not be deleted&quot;).status(400);</span>
+		}
+<span class="nc" id="L80">	}</span>
 	
 	public void getPlanetMoons(Context ctx) {
-<span class="nc" id="L59">		int planetId = ctx.pathParamAsClass(&quot;id&quot;, Integer.class).get();</span>
-<span class="nc" id="L60">		User u = ctx.sessionAttribute(&quot;user&quot;);</span>
-<span class="nc" id="L61">		List&lt;Moon&gt; moonList = moonService.getMoonsFromPlanet(u.getId(), planetId);</span>
+<span class="nc" id="L83">		int planetId = ctx.pathParamAsClass(&quot;id&quot;, Integer.class).get();</span>
+<span class="nc" id="L84">		User u = ctx.sessionAttribute(&quot;user&quot;);</span>
+<span class="nc" id="L85">		List&lt;Moon&gt; moonList = moonService.getMoonsFromPlanet(u.getId(), planetId);</span>
 		
-<span class="nc" id="L63">		ctx.json(moonList).status(200);</span>
-<span class="nc" id="L64">	}</span>
+<span class="nc" id="L87">		ctx.json(moonList).status(200);</span>
+<span class="nc" id="L88">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
