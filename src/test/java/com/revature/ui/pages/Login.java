@@ -24,6 +24,14 @@ public class Login {
     @FindBy(xpath =  "//a[contains(@href, 'create')]")
     WebElement createAccountLink;
 
+
+    @FindBy(xpath = "//*[@id=\"loginForm\"]/input[@value=\"Create\"]")
+    private WebElement registerButton;
+
+    @FindBy(xpath = "//*[@id=\"loginForm\"]/input[@value=\"Login\"]")
+    private WebElement loginButton;
+    @FindBy(id = "greeting")
+    private WebElement greetingBtn;
     public Login(WebDriver driver) {
         this.driver = driver;
     }
@@ -59,5 +67,16 @@ public class Login {
         }
 
         return handled;
+    }
+
+
+    public void waitForLoginPageLoad() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.visibilityOf(loginButton));
+    }
+
+    public void waitForHomePageLoad() {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.visibilityOf(greetingBtn));
     }
 }

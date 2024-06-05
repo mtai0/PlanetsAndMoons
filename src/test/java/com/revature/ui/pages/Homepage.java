@@ -9,6 +9,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 public class Homepage {
     private WebDriver driver;
@@ -35,8 +36,32 @@ public class Homepage {
     WebElement celestialTable;
 
     @FindBy(id = "locationSelect")
-    WebElement locationSelectElement;
+    WebElement locationSelect;
 
+    @FindBy(xpath = "//*[@id='inputContainer']//button[contains(text(), 'Submit Planet')]")
+    private WebElement planetSubmitButton;
+    @FindBy(id = "planetNameInput")
+    private WebElement planetNameInput;
+
+    @FindBy(id = "orbitedPlanetInput")
+    private WebElement orbitedPlanetInput;
+
+
+    @FindBy(xpath = "//*[@id=\"loginForm\"]/input[@value=\"Create\"]")
+    private WebElement registerButton;
+
+    @FindBy(id = "deleteInput")
+    private WebElement deleteInput;
+
+
+    @FindBy(id = "searchPlanetInput")
+    private WebElement searchPlanetInput;
+
+    @FindBy(xpath = "//*[@id=\"loginForm\"]/input[@value=\"Login\"]")
+    private WebElement loginButton;
+    @FindBy(id = "greeting")
+
+    private WebElement greetingBtn;
     //Functionality of certain elements changed based on whether it is set to Planet or Moon.
     private enum SiteSetting {
         PLANET, MOON
@@ -67,9 +92,9 @@ public class Homepage {
     {
 
 
-        Select locationSelect = new Select(locationSelectElement);
+        Select locationselectelement = new Select(locationSelect);
 
-        locationSelect.selectByVisibleText("Moon");
+        locationselectelement.selectByVisibleText("Moon");
 
 
     }
@@ -104,4 +129,98 @@ public class Homepage {
             return false;
         }
     }
+
+
+    public boolean isPlanetInTable(String bodyName) {
+        System.out.println("Is Planet in Table: " + bodyName);
+
+        List<WebElement> rows = celestialTable.findElements(By.tagName("tr"));
+
+        for (WebElement row : rows) {
+            List<WebElement> cells = row.findElements(By.tagName("td"));
+            if (!cells.isEmpty()) {
+                String type = cells.get(0).getText();
+                String name = cells.get(2).getText();
+
+                if ("planet".equals(type) && bodyName.equals(name)) {
+                    return true;
+                } else if ("moon".equals(type) && bodyName.equals(name)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public int getPlanetIdByName(String bodyName) {
+        List<WebElement> rows = celestialTable.findElements(By.tagName("tr"));
+
+        for (WebElement row : rows) {
+            List<WebElement> cells = row.findElements(By.tagName("td"));
+            if (!cells.isEmpty()) {
+                String type = cells.get(0).getText();
+                String id = cells.get(1).getText();
+                String name = cells.get(2).getText();
+                String owner = cells.get(3).getText();
+
+                if ("planet".equals(type) && bodyName.equals(name) || "moon".equals(type) && bodyName.equals(name)) {
+                    try {
+                        return Integer.parseInt(id);
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                        return -1; // Return -1 if the ID is not a valid integer
+                    }
+                }
+            }
+        }
+        return -1; // Return -1 if the planet is not found
+    }
+
+
+    // Method to check which option is selected in locationSelect
+    public String getSelectedLocationOption() {
+        Select select = new Select(locationSelect);
+        return select.getFirstSelectedOption().getText();
+    }
+
+    // Method to check if option 1 or option 2 is selected
+    public boolean isOptionSelected(String optionText) {
+        Select select = new Select(locationSelect);
+        return select.getFirstSelectedOption().getText().equalsIgnoreCase(optionText);
+    }
+
+    // Method to select a desired option in locationSelect
+    public void selectLocationOption(String optionText) {
+        Select select = new Select(locationSelect);
+        select.selectByVisibleText(optionText);
+    }
+
+    public void enterSearchPlanetInput(String input) {
+        searchPlanetInput.sendKeys(input);
+    }
+
+    public void clickSearchPlanetButton() {
+        searchPlanetButton.click();
+    }
+    public void clickDeleteButton() {
+        deleteButton.click();
+    }
+
+    public void clickSubmitPlanetButton() {
+        planetSubmitButton.click();
+    }
+
+
+    public void enterDeleteInput(String input) {
+        deleteInput.sendKeys(input);
+    }
+
+    public void enterPlanetNameAddInput(String input) {
+        planetNameInput.sendKeys(input);
+    }
+
+    public void enterPlanetIDAddInput(String input) {
+        orbitedPlanetInput.sendKeys(input);
+    }
+
 }

@@ -1,43 +1,90 @@
-Feature: Planet Creation
+Feature:Planet Management
 
-  Background: user is on planet Management page
-    Given user is logged in and on the planet management page
+  Background:
+    Given the user has an existing account
+    And the user is logged in
+    And the user is on the home page
 
   Scenario Outline: Add Planet - Valid
-    Given the planet name "<planetName>" does not already exist
-    And "<planetName>" is of valid length and not empty
-    When the user enters "<planetName>" in the planet add input
+    Given the planet name <planetName> does not already exist
+    And the Planet option is selected in the location select
+    When the user enters <planetName> in the planet add input
     And clicks the submit planet button
-    Then the planet name "<planetName>" is added successfully to the Celestial Table
+    Then the planet name <planetName> should be added successfully to the Celestial Table
 
     Examples:
       | planetName   |
       | "earth"      |
       | "Jupiter"    |
       | "SATURN"     |
+      | "  Venus  "  |
       | "MARS123"    |
       | "alpha@beta" |
 
   Scenario Outline: Add Planet - Invalid
-    Given planet name "<planetName>" isnt empty
-    And "<planetName>" is of invalid length
-    When  User inputs planet details "<planetName>"
-    And User clicks on planet Submit button
-    Then   fails for planet
+    Given the Planet option is selected in the location select
+    When the user enters <planetName> in the planet add input
+    And clicks the submit planet button
+    Then the Error alert should be displayed
 
     Examples: Negative Cases
       | planetName                                      |
       | ""                                              |
       | "AstroAdventureWonderlandWonderlandWonderland " |
-      | "213443"                                        |
+      | "earth; DROP TABLE planets;"                    |
 
-  Scenario Outline: Users cant create a planet that already Exists
-    Given <planetName> is not empty and not of invalid length
-    When planet details "<planetName>" are inputted
-    And User clicks on the add planet button
-    Then Planet Creation Fails
+  Scenario: Add Planet - Planet Already Exists
+    Given the planet name "earth" already exists
+    And the Planet option is selected in the location select
+    When the user enters "earth" in the planet add input
+    And clicks the submit planet button
+    Then  the Error alert should be displayed
+
+
+  Scenario Outline: Remove Planet - Valid
+    Given the planet name <planetName> already exists
+    And the Planet option is selected in the location select
+    When the user enters planet ID to delete <planetName> in the delete planet input
+    And clicks the delete button
+    Then the alert should be displayed for Planet <planetName> Deleted Successfully
+
     Examples:
-      |planetName|
-      |"earth"          |
-      |"Jupiter"|
-      |"SATURN" |
+      | planetName |
+      | "earth"    |
+      | "jupiter"  |
+
+  Scenario Outline: Remove Planet - Invalid
+    Given the planet name "saturn" already exists
+    And the Planet option is selected in the location select
+    When the user enters <planetName> in the delete planet input
+    And clicks the delete button
+    Then the Error alert should be displayed
+
+    Examples:
+      | planetName   |
+      | "saturn"     |
+      | ""           |
+      | "1000000000" |
+
+  Scenario Outline: Search Planet - Valid
+    Given the planet name <planetName> already exists
+    When the user enters <planetName> in the search planet input
+    And clicks the search planet button
+    Then the celestial table displays the <planetName>
+
+    Examples:
+      | planetName   |
+      | "SATURN"     |
+      | "  Venus  "  |
+      | "MARS123"    |
+      | "alpha@beta" |
+
+  Scenario Outline: Search Planet - Invalid
+    When the user enters <planetName> in the search planet input
+    And clicks the search planet button
+    Then the Error alert should be displayed
+
+    Examples:
+      | planetName                     |
+      | "NonExistentPlanet"            |
+      | "planet'; DROP TABLE planets;" |
