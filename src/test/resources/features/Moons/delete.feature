@@ -1,12 +1,23 @@
-Feature: Users can delete moons in the Planetarium
-  Background: User is logged in and viewing their list of moons.
+Feature: Users can manage moons in the Planetarium
+  Background: User is logged in and on the Moon Management page
+    Given User is on the Moon Management page
 
-  Scenario: Users can delete a moon
-    Given User has moon "MoonName" listed on their account
-    When User chooses to delete "MoonName"
-    Then User no longer sees "MoonName" in their list of moons
+  Scenario Outline: Users can delete an existing moon
+    Given a moon with the name "<moonName>" already exists on planet "<planetName>"
+    When User selects the moon "<moonName>" | "<planetName>"
+    And User clicks on the delete moon button
+    Then moon deletion is successful
+    Examples:
+      | moonName | planetName |
+      | Luna     | Earth      |
+      | Phobos   | Mars       |
 
-  Scenario: Users receive an error when trying to delete a non-existing moon
-    Given User does not have moon "NonExistentMoon" listed on their account
-    When User tries to delete "NonExistentMoon"
-    Then User gets an error saying "Moon not found"
+  Scenario Outline: Users cannot delete a moon if it does not exist
+    Given no moon exists with the name "<moonName>" on planet "<planetName>"
+    When User selects the moon "<moonName>" | "<planetName>"
+    And User clicks on the delete moon button
+    Then Nothing Happens
+    Examples:
+      | moonName | planetName |
+      | Deimos   | Mars       |
+      | Titan    | Earth     |
