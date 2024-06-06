@@ -26,6 +26,9 @@ public class PlanetService {
 	}
 
 	public Planet createPlanet(int ownerId, Planet planet) {
+		//Should handle this in the Controller method instead
+		planet.setOwnerId(ownerId);
+
 		String planetName = planet.getName();
 		if (!planetName.isEmpty() && planetName.length() <= 30) {
 			return dao.createPlanet(planet);
