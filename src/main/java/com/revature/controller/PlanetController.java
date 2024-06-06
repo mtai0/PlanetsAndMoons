@@ -52,7 +52,9 @@ public class PlanetController {
 	public void createPlanet(Context ctx) {
 		Planet planetToBeCreated = ctx.bodyAsClass(Planet.class);
 		User u = ctx.sessionAttribute("user");
-		
+
+		//Leaving arguments the same for backwards compatibility with tests.
+		//OwnerId should be set here, not in the Service layer.
 		Planet p = planetService.createPlanet(u.getId(), planetToBeCreated);
 
 		//This should be exception-based, but not enough time to refactor this.
