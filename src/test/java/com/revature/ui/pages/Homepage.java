@@ -15,7 +15,7 @@ public class Homepage {
     private WebDriver driver;
 
     String moonName;
-
+    String planetName;
     @FindBy(id = "deleteInput")
     WebElement deleteText;
 
@@ -94,13 +94,7 @@ public class Homepage {
         orbitedPlanetInput.sendKeys(planetId);
     }
 
-    public void clickSubmitButton() {
-        WebDriverWait wait = new WebDriverWait(driver,  Duration.ofSeconds(5));
-        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(By.className("submit-button")));
-        submitButton.click();
-       
-       
-    }
+
        public boolean moonadded() {
         if(moonName=="")
         {
@@ -195,4 +189,129 @@ public class Homepage {
         wait.until(ExpectedConditions.elementToBeClickable(deleteButton));  // Ensure the button is clickable
         deleteButton.click();  // Click the delete button
     }
+
+
+    //for add planet
+    public void inputPlanetName(String planetName2) {
+        this.planetName=planetName2;
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebElement moonNameInput = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("planetNameInput")));
+        moonNameInput.sendKeys(planetName);
+    }
+
+    public void clickSubmitButton() {
+        WebDriverWait wait = new WebDriverWait(driver,  Duration.ofSeconds(5));
+        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(By.className("submit-button")));
+        submitButton.click();
+
+
+    }
+    public boolean planetAdded() {
+        if(planetName=="")
+        {
+            return false;
+        }
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        By planetLocator = By.xpath("//table[@id='celestialTable']//tr[td[contains(text(), '" + planetName + "')]]");
+        try{
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(planetLocator)) != null;
+        }
+        catch(Exception e){
+            return false;
+        }
+
+
+
+
+    }
+
+    public boolean PlanetSearched(String planetName)
+    {
+        if(planetName=="")
+        {
+            return true;
+        }
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        By planetlocator = By.xpath("//table[@id='celestialTable']//tr[td[contains(text(), '" + planetName + "')]]");
+        try{
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(planetlocator)) != null;
+        }
+        catch(Exception e){
+            return true;
+        }
+    }
+    public void clickPlanetSelector()
+    {
+
+
+        Select locationSelect = new Select(locationSelectElement);
+
+        locationSelect.selectByVisibleText("Planet");
+
+
+    }
+
+    public boolean planetDeleted(){
+        if(planetName.equals(""))
+        {
+            return true;
+        }
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        By planetlocator = By.xpath("//table[@id='celestialTable']//tr[td[contains(text(), '" + planetName + "')]]");
+        try{
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(planetlocator)) != null;
+        }
+        catch(Exception e){
+            return true;
+        }
+    }
+
+
+
+    public void planetsearchINput(String planetName)
+    {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOf(searchPlanetText));  // Ensure the element is visible
+        searchPlanetText.clear();  // Clear any existing text
+        searchPlanetText.sendKeys(planetName);  // Enter the text
+    }
+    public void setSearchPlanetButton()
+    {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.elementToBeClickable(searchPlanetButton));  // Ensure the button is clickable
+        searchPlanetButton.click();
+    }
+
+    public int getPlanetID(String planetName) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebElement table = wait.until(ExpectedConditions.visibilityOf(celestialTable));
+        List<WebElement> rows = table.findElements(By.tagName("tr"));
+
+        for (WebElement row : rows) {
+            List<WebElement> cells = row.findElements(By.tagName("td"));
+            if (!cells.isEmpty() && cells.get(2).getText().equals(planetName)) {  // Assuming the moon name is in the third cell
+                try {
+                    return Integer.parseInt(cells.get(1).getText());  // Assuming the ID is in the second cell
+                } catch (NumberFormatException e) {
+                    System.err.println("Error parsing planet ID: " + e.getMessage());
+                    return -1;  // Return -1 or any other error code to indicate failure
+                }
+            }
+        }
+        return -1;  // Moon not found
+    }
+
+    public void inputPlanetIDforDeletion(int planetID) {
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.visibilityOf(deleteText));  // Wait until the deleteText element is visible
+
+        deleteText.clear();  // Clear any existing content in the input field
+        deleteText.sendKeys(String.valueOf(planetID));  // Input the moon ID as a string
+
+
+
+        System.out.println("Planet ID " + planetID + " entered for deletion.");
+    }
+
+
 }
