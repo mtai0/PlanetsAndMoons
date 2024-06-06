@@ -12,6 +12,7 @@ pipeline {
             steps {
                 // sh 'chmod a+x mvn'
                 sh 'mvn clean package'
+                sh 'mvn test'
             }
 
             post {
