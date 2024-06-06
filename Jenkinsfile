@@ -1,6 +1,9 @@
 pipeline {
-    agent any
-
+      agent any
+    tools {
+        // Specify the Maven installation named "TestMaven"
+        maven 'TestMaven'
+    }
     stages {
         stage('Build') {
             steps {
